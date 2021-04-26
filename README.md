@@ -22,7 +22,7 @@ pod 'DBOCKit'
 
 ## Author
 
-wyf705064, wangyajun05822@hellobike.com
+runs.wang.dev@gmail.com
 
 ## License
 
