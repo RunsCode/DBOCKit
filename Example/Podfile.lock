@@ -1,0 +1,25 @@
+PODS:
+  - DBOCKit (0.1.0)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+
+DEPENDENCIES:
+  - DBOCKit (from `../`)
+  - FMDB
+
+SPEC REPOS:
+  trunk:
+    - FMDB
+
+EXTERNAL SOURCES:
+  DBOCKit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  DBOCKit: df9ac4c443d2a3fa4e9ffe12d9961a1e6fb28157
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+
+PODFILE CHECKSUM: 4ad7551210779fc277f886490a08a9618d38fbed
+
+COCOAPODS: 1.10.0

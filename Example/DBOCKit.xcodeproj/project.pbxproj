@@ -37,7 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		34ACE1B04BBCA3DC6A261845 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		34ACE1B04BBCA3DC6A261845 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* DBOCKit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DBOCKit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -58,14 +58,14 @@
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		61997C8011A2B53288474916 /* Pods-DBOCKit_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DBOCKit_Tests.debug.xcconfig"; path = "Target Support Files/Pods-DBOCKit_Tests/Pods-DBOCKit_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		61CB76AC6B7EAE0E10AE7507 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		61CB76AC6B7EAE0E10AE7507 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		986A9B53125DDA5B94D723B0 /* Pods-DBOCKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DBOCKit_Tests.release.xcconfig"; path = "Target Support Files/Pods-DBOCKit_Tests/Pods-DBOCKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		B50BB9F9FEC1EC9645E17FE5 /* Pods_DBOCKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DBOCKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C03E3D1F7C38A23B8101E8AA /* Pods_DBOCKit_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DBOCKit_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C42393E6288EB30E04C83788 /* Pods-DBOCKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DBOCKit_Example.release.xcconfig"; path = "Target Support Files/Pods-DBOCKit_Example/Pods-DBOCKit_Example.release.xcconfig"; sourceTree = "<group>"; };
-		CC6249001703782EEFC26238 /* DBOCKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = DBOCKit.podspec; path = ../DBOCKit.podspec; sourceTree = "<group>"; };
+		CC6249001703782EEFC26238 /* DBOCKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = DBOCKit.podspec; path = ../DBOCKit.podspec; sourceTree = "<group>"; };
 		FE82D80B6B17799C80D08433 /* Pods-DBOCKit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DBOCKit_Example.debug.xcconfig"; path = "Target Support Files/Pods-DBOCKit_Example/Pods-DBOCKit_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,7 +103,6 @@
 				61997C8011A2B53288474916 /* Pods-DBOCKit_Tests.debug.xcconfig */,
 				986A9B53125DDA5B94D723B0 /* Pods-DBOCKit_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -248,6 +247,9 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = wyf705064;
 				TargetAttributes = {
+					6003F589195388D20070C39A = {
+						DevelopmentTeam = KPSKY2677A;
+					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -258,6 +260,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -303,10 +306,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DBOCKit_Example/Pods-DBOCKit_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/DBOCKit/DBOCKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DBOCKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -494,6 +499,7 @@
 			baseConfigurationReference = FE82D80B6B17799C80D08433 /* Pods-DBOCKit_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = KPSKY2677A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DBOCKit/DBOCKit-Prefix.pch";
 				INFOPLIST_FILE = "DBOCKit/DBOCKit-Info.plist";
@@ -510,6 +516,7 @@
 			baseConfigurationReference = C42393E6288EB30E04C83788 /* Pods-DBOCKit_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = KPSKY2677A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DBOCKit/DBOCKit-Prefix.pch";
 				INFOPLIST_FILE = "DBOCKit/DBOCKit-Info.plist";
