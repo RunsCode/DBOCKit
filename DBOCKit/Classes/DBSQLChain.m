@@ -7,6 +7,10 @@
 //
 
 #import "DBSQLChain.h"
+#include "string_common.h"
+
+const int kMaxSQLBufferLength = 1024;
+
 
 @interface DBSQLChain ()
 
@@ -16,7 +20,9 @@
 
 @end
 
-@implementation DBSQLChain
+@implementation DBSQLChain {
+    char _bufferSql[kMaxSQLBufferLength];
+}
 
 #ifdef DEBUG
 - (void)dealloc {
@@ -81,16 +87,26 @@
 
 @implementation DBSQLChain (SubAction)
 
+- (DBSQLChain *)distinct {
+    return self;
+}
+
 - (DBSQLChain *)column {
     return self;
 }
 
-- (DBSQLChain *)orderBy {
+- (DBSQLChain *)desc {
     return self;
 }
 
-- (DBSQLChain * (^)(void))desc {
-    return ^{
+- (DBSQLChain * (^)(NSString *))orderBy {
+    return ^(NSString *FieldName){
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(NSString *))count {
+    return ^(NSString *fieldName) {
         return self;
     };
 }
@@ -115,6 +131,12 @@
 
 - (DBSQLChain * (^)(NSString *, ...))where {
     return ^(NSString *expression, ...) {
+        va_list ap;
+        va_start(ap, expression);
+        NSString *str = [[NSString alloc] initWithFormat:expression arguments:ap];
+        va_end(ap);
+
+        immutableCopyCatDest(self->_bufferSql, str.UTF8String);
         return self;
     };
 }
@@ -137,8 +159,8 @@
     };
 }
 
-- (DBSQLChain * (^)(NSString *))count {
-    return ^(NSString *fieldName) {
+- (DBSQLChain * (^)(NSString *, ...))append {
+    return ^(NSString *sql, ...) {
         return self;
     };
 }
@@ -160,8 +182,8 @@
     };
 }
 
-- (DBSQLChain * (^)(NSString *, ...))property {
-    return ^(NSString *tName, ...) {
+- (DBSQLChain * (^)(NSString *))property {
+    return ^(NSString *tName) {
         return self;
     };
 }
@@ -191,3 +213,82 @@
 }
 
 @end
+
+
+@implementation DBSQLChain (CStringExpression)
+
+- (DBSQLChain * (^)(const char *))c_orderBy {
+    return ^(const char *fieldName) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *))c_count {
+    return ^(const char *fieldName) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *))c_field {
+    return ^(const char *fieldName) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *))c_add {
+    return ^(const char *property) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *))c_table {
+    return ^(const char *tName) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *))c_from {
+    return ^(const char *tName) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *, ...))c_where {
+    return ^(const char *expression, ...) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *, ...))c_set {
+    return ^(const char *expression, ...) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *, ...))c_and {
+    return ^(const char *expression, ...) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *, ...))c_or {
+    return ^(const char *expression, ...) {
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *, ...))c_append {
+    return ^(const char *sql, ...) {
+        return self;
+    };
+}
+
+
+@end
+
+/**
+ //va_list args;
+ //va_start(args, format);
+ //NSString *str = [[NSString alloc] initWithFormat:format arguments:args];
+ //va_end(args);
+ */

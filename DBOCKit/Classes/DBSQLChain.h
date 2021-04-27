@@ -45,9 +45,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DBSQLChain (SubAction)
 
+@property (nonatomic, strong, readonly) DBSQLChain *desc;
 @property (nonatomic, strong, readonly) DBSQLChain *column;
-@property (nonatomic, strong, readonly) DBSQLChain *orderBy;
-@property (nonatomic, strong, readonly) DBSQLChain *(^desc)(void);
+@property (nonatomic, strong, readonly) DBSQLChain *distinct;
+@property (nonatomic, strong, readonly) DBSQLChain *(^orderBy)(NSString *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^count)(NSString *fieldName);
 
 @property (nonatomic, strong, readonly) DBSQLChain *(^limit)(NSInteger limit);
 @property (nonatomic, strong, readonly) DBSQLChain *(^offset)(NSInteger offset);
@@ -56,7 +58,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) DBSQLChain *(^set)(NSString *expression, ...);
 @property (nonatomic, strong, readonly) DBSQLChain *(^and)(NSString *expression, ...);
 @property (nonatomic, strong, readonly) DBSQLChain *(^or)(NSString *expression, ...);
-@property (nonatomic, strong, readonly) DBSQLChain *(^count)(NSString *fieldName);
+/// Flexible insert SQL expression in any position
+/// example: append('xxx LIKE yyy')
+@property (nonatomic, strong, readonly) DBSQLChain *(^append)(NSString *sql, ...);
 
 @end
 
@@ -66,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) DBSQLChain *(^table)(NSString *tName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^from)(NSString *tName);
 /// (xxx text, yyy other_type)
-@property (nonatomic, strong, readonly) DBSQLChain *(^property)(NSString *property, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^property)(NSString *property);
 
 @property (nonatomic, strong, readonly) DBSQLChain *(^field)(NSString *fieldName);
 /// (field1, field2, field3, nil)
@@ -78,7 +82,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+@interface DBSQLChain (CStringExpression)
+
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_orderBy)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_count)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_field)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_add)(const char *property);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_table)(const char *tName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_from)(const char *tName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_where)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_set)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_and)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_or)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^c_append)(const char *sql, ...);
+
+@end
+
+
 NS_ASSUME_NONNULL_END
+
+
 /// create table tName (id integer primary key autoincrement, x text);
 /// create table tName(column1 datatype PRIMARY KEY, column2 datatype, ……);
 
