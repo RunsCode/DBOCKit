@@ -251,6 +251,7 @@
 						DevelopmentTeam = KPSKY2677A;
 					};
 					6003F5AD195388D20070C39A = {
+						DevelopmentTeam = KPSKY2677A;
 						TestTargetID = 6003F589195388D20070C39A;
 					};
 				};
@@ -533,6 +534,7 @@
 			baseConfigurationReference = 61997C8011A2B53288474916 /* Pods-DBOCKit_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = KPSKY2677A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -558,6 +560,7 @@
 			baseConfigurationReference = 986A9B53125DDA5B94D723B0 /* Pods-DBOCKit_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = KPSKY2677A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
