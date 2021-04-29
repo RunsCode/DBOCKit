@@ -44,16 +44,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface DBSQLChain (SubAction)
-
+/// 逗号
+@property (nonatomic, strong, readonly) DBSQLChain *comma;
+/// 分号
+@property (nonatomic, strong, readonly) DBSQLChain *semicolon;
+/// 空格
+@property (nonatomic, strong, readonly) DBSQLChain *space;
 @property (nonatomic, strong, readonly) DBSQLChain *desc;
 @property (nonatomic, strong, readonly) DBSQLChain *column;
+/// 去重
 @property (nonatomic, strong, readonly) DBSQLChain *distinct;
 @property (nonatomic, strong, readonly) DBSQLChain *(^orderBy)(NSString *fieldName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^count)(NSString *fieldName);
 
-@property (nonatomic, strong, readonly) DBSQLChain *(^limit)(NSInteger limit);
+@property (nonatomic, strong, readonly) DBSQLChain *(^limit)(NSUInteger limit);
 @property (nonatomic, strong, readonly) DBSQLChain *(^offset)(NSInteger offset);
-@property (nonatomic, strong, readonly) DBSQLChain *(^add)(NSString *property);
+@property (nonatomic, strong, readonly) DBSQLChain *(^add)(NSString *propertyAndType);
 @property (nonatomic, strong, readonly) DBSQLChain *(^where)(NSString *expression, ...);
 @property (nonatomic, strong, readonly) DBSQLChain *(^set)(NSString *expression, ...);
 @property (nonatomic, strong, readonly) DBSQLChain *(^and)(NSString *expression, ...);
@@ -66,37 +72,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface DBSQLChain (PropertyValues)
-
+/// "alter table table_name"
 @property (nonatomic, strong, readonly) DBSQLChain *(^table)(NSString *tName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^tableClass)(Class cls);
 @property (nonatomic, strong, readonly) DBSQLChain *(^from)(NSString *tName);
-/// (xxx text, yyy other_type)
-@property (nonatomic, strong, readonly) DBSQLChain *(^property)(NSString *property);
-
 @property (nonatomic, strong, readonly) DBSQLChain *(^field)(NSString *fieldName);
-/// (field1, field2, field3, nil)
-@property (nonatomic, strong, readonly) DBSQLChain *(^fields)(NSString *fields, ...);
-
-@property (nonatomic, strong, readonly) DBSQLChain *(^value)(id value);
-/// (value1, value2, value3, nil)
-@property (nonatomic, strong, readonly) DBSQLChain *(^values)(id values, ...);
+///// (field1, field2, field3, nil)
+//@property (nonatomic, strong, readonly) DBSQLChain *(^fields)(NSString *fields, ...);
+//
+//@property (nonatomic, strong, readonly) DBSQLChain *(^value)(id value);
+///// (value1, value2, value3, nil)
+//@property (nonatomic, strong, readonly) DBSQLChain *(^values)(id values, ...);
 
 @end
 
 
 @interface DBSQLChain (CStringExpression)
 
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_orderBy)(const char *fieldName);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_count)(const char *fieldName);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_field)(const char *fieldName);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_add)(const char *property);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_table)(const char *tName);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_from)(const char *tName);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_where)(const char *expression, ...);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_set)(const char *expression, ...);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_and)(const char *expression, ...);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_or)(const char *expression, ...);
-@property (nonatomic, strong, readonly) DBSQLChain *(^c_append)(const char *sql, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^orderByC)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^countC)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^fieldC)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^addC)(const char *propertyAndType);
+@property (nonatomic, strong, readonly) DBSQLChain *(^tableC)(const char *tName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^fromC)(const char *tName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^whereC)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^setC)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^andC)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^orC)(const char *expression, ...);
+@property (nonatomic, strong, readonly) DBSQLChain *(^appendC)(const char *sql, ...);
 
 @end
 

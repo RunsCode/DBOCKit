@@ -8,9 +8,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#import <DBOCKit/string_common.h>
+#import <DBOCKit/DBSQLChain.h>
 
 @import XCTest;
-#import <DBOCKit/string_common.h>
+
 
 
 void char_format(char *source, const char *fmt, ...) {
@@ -69,6 +71,15 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
     return res;
 }
 
+- (void)testSNPrintf {
+    char *fieldName = "very_long_long_long_field";
+    char *fmt = "COUNT( `%s` ) ";
+    size_t s = strlen(fmt) + strlen(fieldName) - 1;
+    char buffer[512];
+    int res = snprintf(buffer, s, fmt, fieldName);
+    printf("------> buffer = %s, res = %d \n", buffer, res);
+}
+
 - (void)testMutableCopyCat {
     char *res = mutableMemoryCopy("123", "abc", "iop", NULL);
     XCTAssertTrue(strcmp("123abciop", res) == 0, @"7777777 failed");
@@ -77,8 +88,8 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
 - (void)testCopyCatDest {
     char *hw = "Hello World";
 
-    for (int i = 0; i < 100; i++) {
-        char buffer[128] = { 0 };
+//    for (int i = 0; i < 100; i++) {
+        char buffer[1024] = { 0 };
         memcpy(buffer, hw, strlen(hw));
         printf("====> buffer ==>%s\n", buffer);
         XCTAssertTrue(strcmp("Hello World", buffer) == 0, @"Hello World failed");
@@ -91,7 +102,7 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
         printf("====> res    ==>%s\n", res);
         XCTAssertTrue(strcmp("Hello `World`    123 iop %@￥#%￥&……（*：“《》？！~", res) == 0, @"Hello World 123 iop failed");
         free(res);
-    }
+//    }
 }
 
 - (void)testMemcpy {

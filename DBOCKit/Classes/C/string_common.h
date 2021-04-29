@@ -12,7 +12,8 @@
 
 size_t sizeAlign16(size_t n);
 
-/// 多个字符串拼接 最后一个参数必须是NULL
+/// 多个字符串拼接
+/// ⚠️ ⚠️ ⚠️ 最后一个参数必须是NULL 作为结束标记
 /// 
 /// @example :
 ///  char *res = mutableMemoryCopy("1", "a", "9", NULL);
@@ -20,8 +21,9 @@ size_t sizeAlign16(size_t n);
 /// @param first first description
 char *mutableMemoryCopy(const char *first, ...);
 
-/// 多个字符串拼接 最后一个参数必须是NULL
-///
+/// 多个字符串拼接
+/// ⚠️ ⚠️ ⚠️ 最后一个参数必须是NULL 作为结束标记
+/// 
 /// @example :
 ///     char buffer[16] = { 0 };
 ///     mutableMemoryCpyDest(buffer, "a", "9", NULL);

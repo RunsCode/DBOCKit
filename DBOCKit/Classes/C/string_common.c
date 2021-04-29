@@ -20,7 +20,7 @@ size_t sizeAlign16(size_t n) {
 char *mutableMemoryCopy(const char *first, ...) {
     if (!first) return "";
 
-    char buffer[128] = { 0 };
+    char buffer[256] = { 0 };
     size_t bsz = strlen(first);
     memcpy(buffer, first, bsz);
 
@@ -66,8 +66,9 @@ void mutableMemoryCopyDest(char *dest, const char *first, ...) {
         memcpy(dest + bsz, str, strlen(str));
         bsz += strlen(str);
     }
-    dest[strlen(dest)] = '\0';
     va_end(ap);
+    dest[strlen(dest)] = '\0';
+    printf("----->%ld %s \n", strlen(dest), dest);
 }
 
 int stringFormat(char *dest, const char *fmt, ...) {

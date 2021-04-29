@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		290DEBE29D61C4C5F25E8FAF /* Pods_DBOCKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C03E3D1F7C38A23B8101E8AA /* Pods_DBOCKit_Example.framework */; };
+		4FA5C62A263AC23700D764FF /* DBChainUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA5C629263AC23700D764FF /* DBChainUnitTest.m */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -38,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		34ACE1B04BBCA3DC6A261845 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		4FA5C629263AC23700D764FF /* DBChainUnitTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBChainUnitTest.m; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* DBOCKit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DBOCKit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -170,8 +172,9 @@
 		6003F5B5195388D20070C39A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				6003F5BB195388D20070C39A /* Tests.m */,
+				4FA5C629263AC23700D764FF /* DBChainUnitTest.m */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
+				6003F5BB195388D20070C39A /* Tests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -381,6 +384,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F5BC195388D20070C39A /* Tests.m in Sources */,
+				4FA5C62A263AC23700D764FF /* DBChainUnitTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
