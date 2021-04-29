@@ -12,23 +12,23 @@
 
 size_t sizeAlign16(size_t n);
 
-/// 两个字符串拼接用
-/// @param first first
-/// @param second second
-char *immutableCopyCat(const char *first, const char *second);
-void immutableCopyCatDest(char *dest, const char *str);
-
 /// 多个字符串拼接 最后一个参数必须是NULL
 /// 
 /// @example :
-///  char *res = mutableCopyCat("1", "a", "9", NULL);
-///
-///  char buffer[16];
-///  mutableCopyCatDest(buffer, "a", "9", NULL);
+///  char *res = mutableMemoryCopy("1", "a", "9", NULL);
 ///
 /// @param first first description
-char *mutableCopyCat(const char *first, ...);
-void mutableCopyCatDest(char *dest, const char *first, ...);
+char *mutableMemoryCopy(const char *first, ...);
+
+/// 多个字符串拼接 最后一个参数必须是NULL
+///
+/// @example :
+///     char buffer[16] = { 0 };
+///     mutableMemoryCpyDest(buffer, "a", "9", NULL);
+///
+/// @param dest buffer
+/// @param first first description
+void mutableMemoryCopyDest(char *dest, const char *first, ...);
 
 /// 字符串格式化
 /// @param dest dest description

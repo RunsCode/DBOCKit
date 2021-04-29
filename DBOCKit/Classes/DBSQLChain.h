@@ -68,6 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DBSQLChain (PropertyValues)
 
 @property (nonatomic, strong, readonly) DBSQLChain *(^table)(NSString *tName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^tableClass)(Class cls);
 @property (nonatomic, strong, readonly) DBSQLChain *(^from)(NSString *tName);
 /// (xxx text, yyy other_type)
 @property (nonatomic, strong, readonly) DBSQLChain *(^property)(NSString *property);

@@ -17,69 +17,56 @@ size_t sizeAlign16(size_t n) {
     return (n + (RUNS_BYTE_ALIGNMENT - 1)) & ~(RUNS_BYTE_ALIGNMENT - 1);
 }
 
-char *immutableCopyCat(const char *first, const char *second) {
+char *mutableMemoryCopy(const char *first, ...) {
     if (!first) return "";
-    //
-    size_t secondLength = 0;
-    size_t firstLength = strlen(first);
 
-    if (NULL != second) {
-        secondLength = strlen(second);
-    }
+    char buffer[128] = { 0 };
+    size_t bsz = strlen(first);
+    memcpy(buffer, first, bsz);
 
-    size_t s = sizeAlign16(firstLength + secondLength);
-    char *buffer = (char *)malloc(s);
-    strcpy(buffer, first);
-
-    if (NULL != second) {
-        strcat(buffer, second);
-    }
-    return buffer;
-}
-
-void immutableCopyCatDest(char *dest, const char *str) {
-    if (!dest || !str) {
-        return;
-    }
-
-    if (strlen(str) <= 0) {
-        return;
-    }
-
-    if (strlen(dest) <= 0) {
-        strcpy(dest, str);
-        return;
-    }
-    strcat(dest, str);
-}
-
-char *mutableCopyCat(const char *first, ...) {
-    if (!first) return "";
     va_list ap;
     va_start(ap, first);
-    char *res = (char *)first;
+
     while (1) {
         char *str = va_arg(ap, char *);
         if (!str) break;
         //
-        res = immutableCopyCat(res, str);
+        size_t ssz = strlen(str);
+        memcpy(buffer + bsz, str, strlen(str));
+        bsz += ssz;
     }
     va_end(ap);
+
+    size_t s = sizeAlign16(strlen(buffer));
+    char *res = (char *)malloc(s);
+    memcpy(res, buffer, strlen(buffer));
+    res[strlen(buffer)] = '\0';
     return res;
 }
 
-void mutableCopyCatDest(char *dest, const char *first, ...) {
-    if (!dest || !first) return;
+void mutableMemoryCopyDest(char *dest, const char *first, ...) {
+    if (NULL == first) return;
     //
+    size_t bsz = 0, dsz = 0;
+    if (NULL != dest) dsz = strlen(dest);
+    //
+    size_t fsz = strlen(first);
+    if (dsz > 0) {
+        bsz = dsz;
+    }
+    memcpy(dest + bsz, first, fsz);
+    bsz += fsz;
+
     va_list ap;
     va_start(ap, first);
-    immutableCopyCatDest(dest, first);
     while (1) {
         char *str = va_arg(ap, char *);
         if (!str) break;
         //
-        immutableCopyCatDest(dest, str);
+        memcpy(dest + bsz, str, strlen(str));
+        bsz += strlen(str);
     }
+    dest[strlen(dest)] = '\0';
     va_end(ap);
 }
 

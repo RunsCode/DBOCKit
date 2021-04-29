@@ -136,7 +136,7 @@ const int kMaxSQLBufferLength = 1024;
         NSString *str = [[NSString alloc] initWithFormat:expression arguments:ap];
         va_end(ap);
 
-        immutableCopyCatDest(self->_bufferSql, str.UTF8String);
+//        immutableCopyCatDest(self->_bufferSql, str.UTF8String);
         return self;
     };
 }

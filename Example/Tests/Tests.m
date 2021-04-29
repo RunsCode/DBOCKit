@@ -7,10 +7,12 @@
 //
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
+
 @import XCTest;
-#import <DBOCKit/DBSQLChain.h>
 #import <DBOCKit/string_common.h>
-// const char * __restrict, ...
+
+
 void char_format(char *source, const char *fmt, ...) {
     va_list ap;
     va_start(ap,fmt);
@@ -33,6 +35,8 @@ char *char_format1(const char *fmt, ...) {
 @interface Tests : XCTestCase
 
 @end
+
+const size_t MAX_BUFFER_SIZE = 128;
 
 @implementation Tests
 
@@ -66,46 +70,58 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
 }
 
 - (void)testMutableCopyCat {
-    char *res = mutableCopyCat("123", "abc", "iop", NULL);
+    char *res = mutableMemoryCopy("123", "abc", "iop", NULL);
     XCTAssertTrue(strcmp("123abciop", res) == 0, @"7777777 failed");
+}
+
+- (void)testCopyCatDest {
+    char *hw = "Hello World";
+
+    for (int i = 0; i < 100; i++) {
+        char buffer[128] = { 0 };
+        memcpy(buffer, hw, strlen(hw));
+        printf("====> buffer ==>%s\n", buffer);
+        XCTAssertTrue(strcmp("Hello World", buffer) == 0, @"Hello World failed");
+
+        mutableMemoryCopyDest(buffer, " `123`", "   "," iop", " %@￥#%￥&……（*::::\"""“《》？！~", NULL);
+        printf("====> buffer ==>%s\n", buffer);
+        XCTAssertTrue(strcmp("Hello World `123`    iop %@￥#%￥&……（*::::\"""“《》？！~", buffer) == 0, @"Hello World 123 iop failed");
+
+        char *res = mutableMemoryCopy("Hello `World`", "   ", " 123", " iop %@￥#%￥&……（*：“《》？！~", NULL);
+        printf("====> res    ==>%s\n", res);
+        XCTAssertTrue(strcmp("Hello `World`    123 iop %@￥#%￥&……（*：“《》？！~", res) == 0, @"Hello World 123 iop failed");
+        free(res);
+    }
+}
+
+- (void)testMemcpy {
+
+    char a[] = "aa";
+    char b[] = "bb";
+    char c[] = "cc";
+    char temp[128];// = {0};
+
+    memcpy(temp, a, strlen(a));
+    printf("temp = %s len = %lu \n", temp, strlen(temp));
+
+    memcpy(temp + strlen(a), b, strlen(b));
+    printf("temp = %s len = %lu \n", temp, strlen(temp));
+    
+    memcpy(temp + strlen(a) + strlen(c), c, strlen(c));
+    printf("temp = %s len = %lu \n", temp, strlen(temp));
 
 }
 
-- (void)testExample {
-
-    char *res = immutableCopyCat(" `data` %@%@%@%@ == ", "hello");
-    XCTAssertTrue(strcmp(" `data` %@%@%@%@ == hello", res) == 0, @"11111 failed");
-    //
-    res = immutableCopyCat(res, "world");
-    XCTAssertTrue(strcmp(" `data` %@%@%@%@ == helloworld", res) == 0, @"2222222 failed");
-}
-
-- (void)testOCString {
-    NSString *ocs = @"%@%d%f 123ert `//\\#*%%%%`";
-    const char *cstr = ocs.UTF8String;
-    char *res = immutableCopyCat(cstr, "hello");
-    XCTAssertTrue(strcmp("%@%d%f 123ert `//\\#*%%%%`hello", res) == 0, @"6666666 failed");
-}
-
-- (void)testBeforeNULL {
-    char *before = NULL;
-    char *res = immutableCopyCat(before, "hello");
-    printf("----> %s \n", res);
-    XCTAssertTrue(strcmp("", res) == 0, @"3333333 failed");
-}
-
-- (void)testAfterNULL {
-    char *after = NULL;
-    char *res = immutableCopyCat("before", after);
-    printf("----> %s \n", res);
-    XCTAssertTrue(strcmp("before", res) == 0, @"444444 failed");
-}
-
-- (void)testAfterLengthZero {
-    char *after = "";
-    char *res = immutableCopyCat("before", after);
-    printf("----> %s \n", res);
-    XCTAssertTrue(strcmp("before", res) == 0, @"555555 failed");
+- (void)testMemmove {
+    char c[128] = "aabbcc";
+    const char* a = "aa";
+    const char* b = "bb";
+    size_t sza = strlen(a);
+    size_t szb = strlen(b);
+    memmove(c, a, sza);
+    memmove(c + sza, b, szb);
+    c[sza + szb] = 0;
+    printf("a = %s, b = %s, c = %s \n", a, b , c);
 }
 
 @end
