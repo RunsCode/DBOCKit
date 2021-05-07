@@ -39,14 +39,11 @@ va_end(ap); \
     char _bufferSql[kDBOCMaxSQLBufferLength];
 }
 
-//#ifdef DEBUG
+#ifdef DEBUG
 - (void)dealloc {
     NSLog(@"%s", __PRETTY_FUNCTION__);
-    if (NULL != _bufferSql) {
-        free(_bufferSql);
-    }
 }
-//#endif
+#endif
 
 - (instancetype)initWithActionEnum:(DBSQLChainActionEnum)action {
     self = [super init];

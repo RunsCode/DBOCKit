@@ -68,7 +68,7 @@ void mutableMemoryCopyDest(char *dest, const char *first, ...) {
     }
     va_end(ap);
     dest[strlen(dest)] = '\0';
-    printf("----->%ld %s \n", strlen(dest), dest);
+    printf("%ld %s \n", strlen(dest), dest);
 }
 
 int stringFormat(char *dest, const char *fmt, ...) {
