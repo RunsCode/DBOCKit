@@ -103,6 +103,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface DBSQLChain (DotSyntaxAdditions)
+
+@property (nonatomic, readonly) DBSQLChain *_Nonnull(* _Nonnull createFun)(const char *tName);
+
+
+@end
+
 
 NS_ASSUME_NONNULL_END
 

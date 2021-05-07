@@ -10,14 +10,14 @@
 #include <string.h>
 #include "string_common.h"
 
-const int kDBOCMaxSQLBufferLength = 1024;
-const char *kDBOCSQLACtionCREATE = "CREATE ";
-const char *kDBOCSQLACtionDROP = "DROP ";
-const char *kDBOCSQLACtionALTER = "ALTER ";
-const char *kDBOCSQLACtionINSERT = "INSERT ";
-const char *kDBOCSQLACtionDLETE = "DELETE ";
-const char *kDBOCSQLACtionUPDATE = "UPDATE ";
-const char *kDBOCSQLACtionSELECT = "SELECT ";
+int const kDBOCMaxSQLBufferLength = 1024;
+char const * const kDBOCSQLACtionCREATE = "CREATE ";
+char const * const kDBOCSQLACtionDROP = "DROP ";
+char const * const kDBOCSQLACtionALTER = "ALTER ";
+char const * const kDBOCSQLACtionINSERT = "INSERT ";
+char const * const kDBOCSQLACtionDELETE = "DELETE ";
+char const * const kDBOCSQLACtionUPDATE = "UPDATE ";
+char const * const kDBOCSQLACtionSELECT = "SELECT ";
 
 #define OCMutableMemoryCopyDest(exp) \
 va_list ap; \
@@ -39,11 +39,14 @@ va_end(ap); \
     char _bufferSql[kDBOCMaxSQLBufferLength];
 }
 
-#ifdef DEBUG
+//#ifdef DEBUG
 - (void)dealloc {
     NSLog(@"%s", __PRETTY_FUNCTION__);
+    if (NULL != _bufferSql) {
+        free(_bufferSql);
+    }
 }
-#endif
+//#endif
 
 - (instancetype)initWithActionEnum:(DBSQLChainActionEnum)action {
     self = [super init];
@@ -90,7 +93,7 @@ va_end(ap); \
 
             break;
         case DBSQLChainActionDelete: {
-            memcpy(_bufferSql, kDBOCSQLACtionDLETE, strlen(kDBOCSQLACtionDLETE));
+            memcpy(_bufferSql, kDBOCSQLACtionDELETE, strlen(kDBOCSQLACtionDELETE));
         }
 
             break;
@@ -430,5 +433,9 @@ va_end(ap); \
     };
 }
 
+
+@end
+
+@implementation DBSQLChain (DotSyntaxAdditions)
 
 @end
