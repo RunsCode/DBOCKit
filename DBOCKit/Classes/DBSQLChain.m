@@ -19,23 +19,14 @@ char const * const kDBOCSQLACtionDELETE = "DELETE ";
 char const * const kDBOCSQLACtionUPDATE = "UPDATE ";
 char const * const kDBOCSQLACtionSELECT = "SELECT ";
 
-#define OCMutableMemoryCopyDest(exp) \
-va_list ap; \
-va_start(ap, exp); \
-NSString *str = [[NSString alloc] initWithFormat:exp arguments:ap]; \
-mutableMemoryCopyDest(self->_bufferSql, str.UTF8String); \
-va_end(ap); \
-
-
 @interface DBSQLChain ()
 
 @property (nonatomic, assign) DBSQLChainActionEnum actionType;
 
-@property (nonatomic, strong) NSMutableString *sqlJoinedString;
-
 @end
 
 @implementation DBSQLChain {
+    char const *_sqlActions[8];
     char _bufferSql[kDBOCMaxSQLBufferLength];
 }
 
@@ -49,65 +40,36 @@ va_end(ap); \
     self = [super init];
     if (self) {
         _actionType = action;
+        [self sqlActionsInit];
         [self sqlBufferInit];
     }
     return self;
+}
+
+- (void)sqlActionsInit {
+
+    _sqlActions[DBSQLChainActionCreate] = kDBOCSQLACtionCREATE;
+    _sqlActions[DBSQLChainActionDrop] = kDBOCSQLACtionDROP;
+    _sqlActions[DBSQLChainActionAlter] = kDBOCSQLACtionALTER;
+    _sqlActions[DBSQLChainActionInsert] = kDBOCSQLACtionINSERT;
+    _sqlActions[DBSQLChainActionDelete] = kDBOCSQLACtionDELETE;
+    _sqlActions[DBSQLChainActionUpdate] = kDBOCSQLACtionUPDATE;
+    _sqlActions[DBSQLChainActionSelect] = kDBOCSQLACtionSELECT;
+}
+
+- (void)sqlBufferInit {
+
+    char const *action = _sqlActions[_actionType];
+    if (!action || strlen(action) == 0) {
+        return;
+    }
+    memcpy(_bufferSql, action, strlen(action));
 }
 
 - (NSString *)sql {
     [self semicolon];
     NSString *res = [NSString stringWithUTF8String:_bufferSql];
     return res;
-}
-
-- (NSMutableString *)sqlJoinedString {
-    if (_sqlJoinedString) return _sqlJoinedString;
-    //
-    _sqlJoinedString = [[NSMutableString alloc] init];
-    return _sqlJoinedString;
-}
-
-- (void)sqlBufferInit {
-    switch (_actionType) {
-        case DBSQLChainActionCreate: {
-            memcpy(_bufferSql, kDBOCSQLACtionCREATE, strlen(kDBOCSQLACtionCREATE));
-        }
-
-            break;
-        case DBSQLChainActionDrop: {
-            memcpy(_bufferSql, kDBOCSQLACtionDROP, strlen(kDBOCSQLACtionDROP));
-        }
-
-            break;
-        case DBSQLChainActionAlter: {
-            memcpy(_bufferSql, kDBOCSQLACtionALTER, strlen(kDBOCSQLACtionALTER));
-        }
-
-            break;
-        case DBSQLChainActionInsert: {
-            memcpy(_bufferSql, kDBOCSQLACtionINSERT, strlen(kDBOCSQLACtionINSERT));
-        }
-
-            break;
-        case DBSQLChainActionDelete: {
-            memcpy(_bufferSql, kDBOCSQLACtionDELETE, strlen(kDBOCSQLACtionDELETE));
-        }
-
-            break;
-        case DBSQLChainActionUpdate: {
-            memcpy(_bufferSql, kDBOCSQLACtionUPDATE, strlen(kDBOCSQLACtionUPDATE));
-        }
-
-            break;
-        case DBSQLChainActionSelect: {
-            memcpy(_bufferSql, kDBOCSQLACtionSELECT, strlen(kDBOCSQLACtionSELECT));
-        }
-
-            break;
-
-        default:
-            break;
-    }
 }
 
 @end
@@ -146,6 +108,22 @@ va_end(ap); \
 @end
 
 
+#define DBOCSUBACTIONFUNC(name) \
+return ^(const char *expression, ...) { \
+    va_list ap; \
+    va_start(ap, expression); \
+    char buffer[512] = { 0 }; \
+    vsnprintf(buffer, 512, expression, ap); \
+    va_end(ap); \
+    if (name && strlen(name) > 0) { \
+        mutableMemoryCopyDest(self->_bufferSql, name, buffer, NULL);\
+    } else { \
+        mutableMemoryCopyDest(self->_bufferSql, buffer, NULL);\
+    } \
+    return self.space; \
+}; \
+
+
 @implementation DBSQLChain (SubAction)
 
 - (DBSQLChain *)column {
@@ -174,51 +152,19 @@ va_end(ap); \
 }
 
 - (DBSQLChain * (^)(const char *, ...))where {
-    return ^(const char *expression, ...) {
-        va_list ap;
-        va_start(ap, expression);
-        char buffer[512] = { 0 };
-        vsnprintf(buffer, 512, expression, ap);
-        va_end(ap);
-        mutableMemoryCopyDest(self->_bufferSql, "WHERE ", buffer, NULL);
-        return self.space;
-    };
+    DBOCSUBACTIONFUNC("WHERE ")
 }
 
 - (DBSQLChain * (^)(const char *, ...))set {
-    return ^(const char *expression, ...) {
-        va_list ap;
-        va_start(ap, expression);
-        char buffer[512] = { 0 };
-        vsnprintf(buffer, 512, expression, ap);
-        va_end(ap);
-        mutableMemoryCopyDest(self->_bufferSql, "SET ", buffer, NULL);
-        return self.space;
-    };
+    DBOCSUBACTIONFUNC("SET ")
 }
 
 - (DBSQLChain * (^)(const char *, ...))and {
-    return ^(const char *expression, ...) {
-        va_list ap;
-        va_start(ap, expression);
-        char buffer[512] = { 0 };
-        vsnprintf(buffer, 512, expression, ap);
-        va_end(ap);
-        mutableMemoryCopyDest(self->_bufferSql, "AND ", buffer, NULL);
-        return self.space;
-    };
+    DBOCSUBACTIONFUNC("AND ")
 }
 
 - (DBSQLChain * (^)(const char *, ...))or {
-    return ^(const char *expression, ...) {
-        va_list ap;
-        va_start(ap, expression);
-        char buffer[512] = { 0 };
-        vsnprintf(buffer, 512, expression, ap);
-        va_end(ap);
-        mutableMemoryCopyDest(self->_bufferSql, "OR ", buffer, NULL);
-        return self.space;
-    };
+    DBOCSUBACTIONFUNC("OR ")
 }
 
 
@@ -320,15 +266,7 @@ va_end(ap); \
 }
 
 - (DBSQLChain * (^)(const char *, ...))append {
-    return ^(const char *sql, ...) {
-        va_list ap;
-        va_start(ap, sql);
-        char buffer[512] = { 0 };
-        vsnprintf(buffer, 512, sql, ap);
-        va_end(ap);
-        mutableMemoryCopyDest(self->_bufferSql, buffer, NULL);
-        return self.space;
-    };
+    DBOCSUBACTIONFUNC(NULL)
 }
 
 @end
