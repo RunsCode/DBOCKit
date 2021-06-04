@@ -8,11 +8,35 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol DBObjectProtocol;
+@protocol DBObserverProtocol;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol DBOperaterProtocol <NSObject>
 
-- (void)execute;
+- (BOOL)existsTableWithName:(NSString *)name;
+
+- (BOOL)createTableWithObjClass:(Class<DBObjectProtocol>)cls;
+
+///alter drop
+- (BOOL)executeWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls;
+
+/// isnert delete update
+///
+/// @param sql sql description
+/// @param obj an observed object model
+- (BOOL)updateSql:(NSString *)sql observable:(id<DBObserverProtocol>)obj;
+
+/// select
+- (NSArray *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls;
+
+/// count
+- (NSInteger)countWithSql:(NSString *)sql;
+
+- (void)addObserver:(id<DBObserverProtocol>)observer;
+
+- (void)removeObserver:(id<DBObserverProtocol>)observer;
 
 @end
 

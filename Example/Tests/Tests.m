@@ -10,6 +10,8 @@
 #include <string.h>
 #import <DBOCKit/string_common.h>
 #import <DBOCKit/DBSQLChain.h>
+#import <DBOCKit/IMMessage.h>
+#import <DBOCKit/NSObject+DBObj.h>
 
 @import XCTest;
 
@@ -40,6 +42,7 @@ char *char_format1(const char *fmt, ...) {
 
 const size_t MAX_BUFFER_SIZE = 128;
 
+
 @implementation Tests
 
 - (void)setUp {
@@ -52,13 +55,25 @@ const size_t MAX_BUFFER_SIZE = 128;
     [super tearDown];
 }
 
+- (void)testObjProperty {
+//    char dest[11] = {0};
+//    char *testStr = "T@\"IMUser\",C,N,V_msgId";
+//    StringSplit(testStr, dest, "\"", 1);
+//    printf("des = %s \n", dest);
+    NSString *sql = [IMMessage dboc_defaultCreateTableSql];
+    NSLog(@"%@", sql);
+    //
+    NSDictionary *map = [IMMessage.new dboc_customObjClassMap];
+    NSLog(@"%@", map);
+}
+
 
 - (void)testFormat {
 
     //    char *buffer = (char *)malloc(256);
-    char buffer[128];
-    stringFormatTest(buffer, "%s, %d, %4.4f, %c \n", "str_begin", 465, 454651233.1415789465, 'a');
-    printf("=====> %s", buffer);
+//    char buffer[128];
+//    stringFormatTest(buffer, "%s, %d, %4.4f, %c \n", "str_begin", 465, 454651233.1415789465, 'a');
+//    printf("=====> %s", buffer);
 
 }
 
@@ -66,7 +81,7 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
     int res;
     va_list ap;
     va_start(ap, fmt);
-    res = stringVSNPrintf(dest, fmt, ap);
+    res = StringVSNPrintf(dest, fmt, ap);
     va_end(ap);
     return res;
 }
@@ -81,7 +96,7 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
 }
 
 - (void)testMutableCopyCat {
-    char *res = mutableMemoryCopy("123", "abc", "iop", NULL);
+    char *res = MutableMemoryCopy("123", "abc", "iop", NULL);
     XCTAssertTrue(strcmp("123abciop", res) == 0, @"7777777 failed");
 }
 
@@ -94,11 +109,11 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
         printf("====> buffer ==>%s\n", buffer);
         XCTAssertTrue(strcmp("Hello World", buffer) == 0, @"Hello World failed");
 
-        mutableMemoryCopyDest(buffer, " `123`", "   "," iop", " %@￥#%￥&……（*::::\"""“《》？！~", NULL);
+        MutableMemoryCopyDest(buffer, " `123`", "   "," iop", " %@￥#%￥&……（*::::\"""“《》？！~", NULL);
         printf("====> buffer ==>%s\n", buffer);
         XCTAssertTrue(strcmp("Hello World `123`    iop %@￥#%￥&……（*::::\"""“《》？！~", buffer) == 0, @"Hello World 123 iop failed");
 
-        char *res = mutableMemoryCopy("Hello `World`", "   ", " 123", " iop %@￥#%￥&……（*：“《》？！~", NULL);
+        char *res = MutableMemoryCopy("Hello `World`", "   ", " 123", " iop %@￥#%￥&……（*：“《》？！~", NULL);
         printf("====> res    ==>%s\n", res);
         XCTAssertTrue(strcmp("Hello `World`    123 iop %@￥#%￥&……（*：“《》？！~", res) == 0, @"Hello World 123 iop failed");
         free(res);

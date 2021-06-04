@@ -6,17 +6,58 @@
 //  Copyright © 2021 王亚军. All rights reserved.
 //
 
+#import "IMUser.h"
+#import "IMObject.h"
 #import "IMMessage.h"
-#import "DBOperationDelegate.h"
+#import "IMSession.h"
+#import "DBObjectProtocol.h"
+#import <objc/runtime.h>
+/** SQLite五种数据类型 */
+#define SQLTEXT     @"TEXT"
+#define SQLDOUBLE   @"DOUBLE"
+#define SQLINTEGER  @"INTEGER"
+#define SQLREAL     @"REAL"
+#define SQLBLOB     @"BLOB"
+#define SQLNULL     @"NULL"
+#define PrimaryKey  @"primary key"
 
-@interface IMMessage () <DBOperationDelegate>
+#define primaryId   @"pk"
+@interface IMMessage () <DBObjectProtocol>
 
 @end
 
 @implementation IMMessage
 
-- (NSString *)tableNameWithOperater:(nonnull id<DBOperaterProtocol>)operater {
-    return @"t_im_meessage_001";
+#ifdef DEBUG
+- (void)dealloc {
+    NSLog(@"%s", __PRETTY_FUNCTION__);
+}
+#endif
+
+
++ (NSString *)tableName {
+    return @"t_im_meessage";
+}
+
++ (NSArray<NSString *> *)ignoreTheFields {
+    return @[
+        NSStringFromSelector(@selector(ignoreInt)),
+        NSStringFromSelector(@selector(ignoreString))
+    ];
+}
+
++ (NSDictionary<NSString *,Class> *)arrayElementtFiledMapping {
+    return @{
+        NSStringFromSelector(@selector(imObjs)): IMObject.class,
+    };
+}
+
+- (void)didFinishConvertToObjByOperation:(id<DBOperaterProtocol>)operater {
+
+}
+
+- (void)didFinishConvertToJSONStringByOperation:(id<DBOperaterProtocol>)operater {
+    
 }
 
 @end

@@ -116,9 +116,9 @@ return ^(const char *expression, ...) { \
     vsnprintf(buffer, 512, expression, ap); \
     va_end(ap); \
     if (name && strlen(name) > 0) { \
-        mutableMemoryCopyDest(self->_bufferSql, name, buffer, NULL);\
+        MutableMemoryCopyDest(self->_bufferSql, name, buffer, NULL);\
     } else { \
-        mutableMemoryCopyDest(self->_bufferSql, buffer, NULL);\
+        MutableMemoryCopyDest(self->_bufferSql, buffer, NULL);\
     } \
     return self.space; \
 }; \
@@ -127,17 +127,17 @@ return ^(const char *expression, ...) { \
 @implementation DBSQLChain (SubAction)
 
 - (DBSQLChain *)column {
-    mutableMemoryCopyDest(self->_bufferSql, "COLUMN ", NULL);
+    MutableMemoryCopyDest(self->_bufferSql, "COLUMN ", NULL);
     return self;
 }
 
 - (DBSQLChain *)desc {
-    mutableMemoryCopyDest(self->_bufferSql, "DESC ", NULL);
+    MutableMemoryCopyDest(self->_bufferSql, "DESC ", NULL);
     return self;
 }
 
 - (DBSQLChain *)distinct {
-    mutableMemoryCopyDest(self->_bufferSql, "DISTINCT ", NULL);
+    MutableMemoryCopyDest(self->_bufferSql, "DISTINCT ", NULL);
     return self;
 }
 
@@ -145,7 +145,7 @@ return ^(const char *expression, ...) { \
 - (DBSQLChain * (^)(const char *))add {
     return ^(const char *propertyAndType) {
         if (propertyAndType && 0 < strlen(propertyAndType)) {
-            mutableMemoryCopyDest(self->_bufferSql, "ADD COLUMN ", propertyAndType, NULL);
+            MutableMemoryCopyDest(self->_bufferSql, "ADD COLUMN ", propertyAndType, NULL);
         }
         return self.space;
     };
@@ -180,7 +180,7 @@ return ^(const char *expression, ...) { \
             return self;
         }
         const char *value = @(limit).stringValue.UTF8String;
-        mutableMemoryCopyDest(self->_bufferSql, "LIMIT ", value, NULL);
+        MutableMemoryCopyDest(self->_bufferSql, "LIMIT ", value, NULL);
         return self.space;
     };
 }
@@ -191,7 +191,7 @@ return ^(const char *expression, ...) { \
             return self;
         }
         const char *value = @(offset).stringValue.UTF8String;
-        mutableMemoryCopyDest(self->_bufferSql, "OFFSET ", value, NULL);
+        MutableMemoryCopyDest(self->_bufferSql, "OFFSET ", value, NULL);
         return self.space;
     };
 }
@@ -199,7 +199,7 @@ return ^(const char *expression, ...) { \
 - (DBSQLChain * (^)(const char *))table {
     return ^(const char *tName) {
         if (tName && 0 < strlen(tName)) {
-            mutableMemoryCopyDest(self->_bufferSql, "TABLE ", tName, NULL);
+            MutableMemoryCopyDest(self->_bufferSql, "TABLE ", tName, NULL);
         }
         return self.space;
     };
@@ -208,7 +208,7 @@ return ^(const char *expression, ...) { \
 - (DBSQLChain * (^)(const char *))from {
     return ^(const char *tName) {
         if (tName && 0 < strlen(tName)) {
-            mutableMemoryCopyDest(self->_bufferSql, "FROM ", tName, NULL);
+            MutableMemoryCopyDest(self->_bufferSql, "FROM ", tName, NULL);
         }
         return self.space;
     };
@@ -219,7 +219,7 @@ return ^(const char *expression, ...) { \
         if (!fieldName && 0 == strlen(fieldName)) {
             return self;
         }
-        mutableMemoryCopyDest(self->_bufferSql, "`", fieldName, "`", NULL);
+        MutableMemoryCopyDest(self->_bufferSql, "`", fieldName, "`", NULL);
         return self;
     };
 }
@@ -227,10 +227,10 @@ return ^(const char *expression, ...) { \
 - (DBSQLChain * (^)(const char *))count {
     return ^(const char *fieldName) {
         if (!fieldName && 0 == strlen(fieldName)) {
-            mutableMemoryCopyDest(self->_bufferSql, "COUNT( * ) ", NULL);
+            MutableMemoryCopyDest(self->_bufferSql, "COUNT( * ) ", NULL);
             return self;
         }
-        mutableMemoryCopyDest(self->_bufferSql, "COUNT( `", fieldName, "` ) ", NULL);
+        MutableMemoryCopyDest(self->_bufferSql, "COUNT( `", fieldName, "` ) ", NULL);
         return self;
     };
 }
@@ -240,7 +240,7 @@ return ^(const char *expression, ...) { \
         if (!fieldName && 0 == strlen(fieldName)) {
             return self;
         }
-        mutableMemoryCopyDest(self->_bufferSql, "ORDER BY `", fieldName, "` ", NULL);
+        MutableMemoryCopyDest(self->_bufferSql, "ORDER BY `", fieldName, "` ", NULL);
         return self;
     };
 }
@@ -250,18 +250,18 @@ return ^(const char *expression, ...) { \
 @implementation DBSQLChain (Assist)
 
 - (DBSQLChain *)comma {
-    mutableMemoryCopyDest(self->_bufferSql, ",", NULL);
+    MutableMemoryCopyDest(self->_bufferSql, ",", NULL);
     return self;
 }
 
 - (DBSQLChain *)semicolon {
-    mutableMemoryCopyDest(self->_bufferSql, ";", NULL);
+    MutableMemoryCopyDest(self->_bufferSql, ";", NULL);
     return self;
 
 }
 
 - (DBSQLChain *)space {
-    mutableMemoryCopyDest(self->_bufferSql, " ", NULL);
+    MutableMemoryCopyDest(self->_bufferSql, " ", NULL);
     return self;
 }
 

@@ -1,5 +1,5 @@
 //
-//  DBObjectDelegate.h
+//  DBObjectProtocol.h
 //  Object_C_Advance
 //
 //  Created by WangYajun on 2021/4/26.
@@ -12,36 +12,40 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DBObjectDelegate <NSObject>
+@protocol DBObjectProtocol <NSObject>
 
 @required
-
 /// fetch table name
-/// @param operater operater description
-- (NSString *)tableNameWithOperater:(id<DBOperaterProtocol>)operater;
++ (NSString *)tableName;
 
 
 @optional
+
++ (NSString *)dboc_tableName;
++ (NSString *)dboc_defaultCreateTableSql;
++ (NSDictionary<NSString *, NSString *> *)dboc_propertyMap;
++ (NSArray<NSString *> *)dboc_alterTableSqlArrayWithFields:(NSArray<NSString *> *)fields;
 
 /// Some ignore don't participate in data field of the operation
 /// Example:
 ///     @[ @"id", @"data",..., @"ts"]
 ///
-/// @param operater operater description
-- (NSArray<NSString *> * _Nullable)ignoreTheFieldsWithOperater:(id<DBOperaterProtocol>)operater;
++ (NSArray<NSString *> * _Nullable)ignoreTheFields;
 
 
-/// All child objects need to resolve the mapping of the conversion operation class
+/// All array child objects need to resolve the mapping of the conversion operation class
 /// Example:
-///     @{ "session" : IMSession.class }
+///     @property (nonatomic, copy) NSArray<IMObject *> *imObjs;
 ///
-/// @param operater operater description
-- (NSDictionary<NSString *, Class> * _Nullable)childFiledMappingWithOperater:(id<DBOperaterProtocol>)operater;
+///     return @{ "imObjs" : IMObject.class  }
+///
++ (NSDictionary<NSString *, Class> * _Nullable)arrayElementtFiledMapping;
 
+@optional
 
-- (void)didFinishConvertToObj:(id<DBOperaterProtocol>)operater;
+- (void)didFinishConvertToObjByOperation:(id<DBOperaterProtocol>)operater;
 
-- (void)didFinishConvertToJSONString:(id<DBOperaterProtocol>)operater;
+- (void)didFinishConvertToJSONStringByOperation:(id<DBOperaterProtocol>)operater;
 
 
 @end

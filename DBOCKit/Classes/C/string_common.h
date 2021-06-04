@@ -9,8 +9,13 @@
 #define string_common_h
 
 #include <stdio.h>
+#include <stdbool.h>
 
-size_t sizeAlign16(size_t n);
+size_t SizeAlign16(size_t n);
+
+bool StringHasPrefix(const char *pre, const char *str);
+bool StringHasSuffix(const char *suf, const char *str);
+void StringSplit(const char *source, char *dest, const char *sep, int idx);
 
 /// 多个字符串拼接
 /// ⚠️ ⚠️ ⚠️ 最后一个参数必须是NULL 作为结束标记
@@ -19,7 +24,7 @@ size_t sizeAlign16(size_t n);
 ///  char *res = mutableMemoryCopy("1", "a", "9", NULL);
 ///
 /// @param first first description
-char *mutableMemoryCopy(const char *first, ...);
+char *MutableMemoryCopy(const char *first, ...);
 
 /// 多个字符串拼接
 /// ⚠️ ⚠️ ⚠️ 最后一个参数必须是NULL 作为结束标记
@@ -30,18 +35,18 @@ char *mutableMemoryCopy(const char *first, ...);
 ///
 /// @param dest buffer
 /// @param first first description
-void mutableMemoryCopyDest(char *dest, const char *first, ...);
+void MutableMemoryCopyDest(char *dest, const char *first, ...);
 
 /// 字符串格式化
 /// @param dest dest description
 /// @param fmt fmt description
-int stringFormat(char *dest, const char *fmt, ...);
+int StringFormat(char *dest, const char *fmt, ...);
 
 
 /// 字符串格式化
 /// @param dest dest description
 /// @param fmt fmt description
 /// @param ap ap description
-int stringVSNPrintf(char *dest, const char *fmt, va_list ap);
+int StringVSNPrintf(char *dest, const char *fmt, va_list ap);
 
 #endif /* string_common_h */

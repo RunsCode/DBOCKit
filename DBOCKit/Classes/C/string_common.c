@@ -10,17 +10,46 @@
 #include <string.h>
 #include <stdarg.h>
 
-
 enum { RUNS_BYTE_ALIGNMENT = 16 };
 
-size_t sizeAlign16(size_t n) {
+size_t SizeAlign16(size_t n) {
     return (n + (RUNS_BYTE_ALIGNMENT - 1)) & ~(RUNS_BYTE_ALIGNMENT - 1);
 }
 
-char *mutableMemoryCopy(const char *first, ...) {
+bool StringHasPrefix(const char *pre, const char *str) {
+    return strncmp(pre, str, strlen(pre)) == 0;
+}
+
+bool StringHasSuffix(const char *suf, const char *str) {
+    const char *res = strstr(str, suf);
+    if (NULL == res) {
+        return false;
+    }
+    return strncmp(suf, res, strlen(res)) == 0;
+}
+
+void StringSplit(const char *source, char *dest, const char *sep, int idx)  {
+    char *token = NULL;
+    char temp[1024] = {0};
+    memcpy(temp, source, strlen(source));
+
+    token = strtok(temp, sep);
+    while(NULL != token) {
+        if(idx-- <= 0) break;
+        token = strtok(NULL, sep);
+    }
+
+    if(idx <= 0 && NULL != token) {
+        memcpy(dest, token, strlen(token));
+        return;
+    }
+    memcpy(dest, "", 0);
+}
+
+char *MutableMemoryCopy(const char *first, ...) {
     if (!first) return "";
 
-    char buffer[256] = { 0 };
+    char buffer[1024] = { 0 };
     size_t bsz = strlen(first);
     memcpy(buffer, first, bsz);
 
@@ -37,14 +66,14 @@ char *mutableMemoryCopy(const char *first, ...) {
     }
     va_end(ap);
 
-    size_t s = sizeAlign16(strlen(buffer));
+    size_t s = SizeAlign16(strlen(buffer));
     char *res = (char *)malloc(s);
     memcpy(res, buffer, strlen(buffer));
     res[strlen(buffer)] = '\0';
     return res;
 }
 
-void mutableMemoryCopyDest(char *dest, const char *first, ...) {
+void MutableMemoryCopyDest(char *dest, const char *first, ...) {
     if (NULL == first) return;
     //
     size_t bsz = 0, dsz = 0;
@@ -68,10 +97,10 @@ void mutableMemoryCopyDest(char *dest, const char *first, ...) {
     }
     va_end(ap);
     dest[strlen(dest)] = '\0';
-    printf("%ld %s \n", strlen(dest), dest);
+//    printf("%ld %s \n", strlen(dest), dest);
 }
 
-int stringFormat(char *dest, const char *fmt, ...) {
+int StringFormat(char *dest, const char *fmt, ...) {
     if (!dest || !fmt) return -1;
     //
     int res;
@@ -82,7 +111,7 @@ int stringFormat(char *dest, const char *fmt, ...) {
     return res;
 }
 
-int stringVSNPrintf(char *dest, const char *fmt, va_list ap) {
+int StringVSNPrintf(char *dest, const char *fmt, va_list ap) {
     if (!dest || !fmt || !ap) return -1;
     return vsnprintf(dest, 512, fmt, ap);
 }
