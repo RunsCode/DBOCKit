@@ -59,14 +59,28 @@
 }
 
 - (BOOL)executeWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls {
+    if (sql.length <= 0) {
+        return NO;
+    }
+    __block BOOL res = NO;
+    [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        res = [db executeUpdate:sql];
+    }];
     return YES;
 }
 
 - (BOOL)updateSql:(NSString *)sql observable:(id<DBObserverProtocol>)obj {
-
-    /// fire event when over update
-    [self fireEventWithObj:obj];
-    return YES;
+    if (sql.length <= 0) {
+        return NO;
+    }
+    __block BOOL res = NO;
+    [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        res = [db executeUpdate:sql];
+    }];
+    if (res) {
+        [self fireEventWithObj:obj];
+    }
+    return res;
 }
 
 - (NSArray *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls {
@@ -74,7 +88,15 @@
 }
 
 - (NSInteger)countWithSql:(NSString *)sql {
-    return 0;
+    if (sql.length <= 0) {
+        return 0;
+    }
+    __block NSUInteger count = 0;
+    [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        FMResultSet *res = [db executeQuery:sql];
+        count = [res longForColumnIndex:0];
+    }];
+    return count;
 }
 
 #pragma mark -- private method

@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)createTableWithObjClass:(Class<DBObjectProtocol>)cls;
 
 ///alter drop
-- (BOOL)executeWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls;
+- (BOOL)executeWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol> _Nullable)cls;
 
 /// isnert delete update
 ///
@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)updateSql:(NSString *)sql observable:(id<DBObserverProtocol>)obj;
 
 /// select
-- (NSArray *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls;
+- (NSArray *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol> _Nullable)cls;
 
 /// count
 - (NSInteger)countWithSql:(NSString *)sql;
