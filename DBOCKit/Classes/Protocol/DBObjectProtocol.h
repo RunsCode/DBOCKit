@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)dboc_tableName;
 + (NSString *)dboc_defaultCreateTableSql;
 + (NSDictionary<NSString *, NSString *> *)dboc_propertyMap;
-+ (NSArray<NSString *> *)dboc_alterTableSqlArrayWithFields:(NSArray<NSString *> *)fields;
++ (NSSet<NSString *> *)dboc_alterTableSqlSetWithFields:(NSSet<NSString *> *)fields;
 
 /// Some ignore don't participate in data field of the operation
 /// Example:

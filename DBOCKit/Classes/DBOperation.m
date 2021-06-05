@@ -84,29 +84,28 @@
     __block BOOL res = YES;
     NSString *tableName = [cls dboc_tableName];
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        NSMutableArray *columns = [NSMutableArray array];
+        NSMutableSet *columnSet = [NSMutableSet setWithCapacity:4];
         FMResultSet *resultSet = [db getTableSchema:tableName];
         while (resultSet.next) {
             NSString *column = [resultSet stringForColumn:@"name"];
-            [columns addObject:column];
+            if (column.length <= 0 ) continue;
+            [columnSet addObject:column];
         }
         //
         NSDictionary<NSString *, NSString *> *map = [cls dboc_propertyMap];
-        NSArray *propertyNames = [map allKeys];
-        NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"NOT (SELF IN %@)", columns];
-        NSArray *resultArray = [propertyNames filteredArrayUsingPredicate:filterPredicate];
-        NSArray<NSString *> *sqlArr = [cls dboc_alterTableSqlArrayWithFields:resultArray];
-        if (sqlArr.count <= 0) {
-            return;
-        }
+        NSMutableSet *propertyNameSet = [NSMutableSet setWithArray:map.allKeys];
+        [propertyNameSet minusSet:columnSet];
+        //
 
-        for (NSString *sql in sqlArr) {
+        NSSet<NSString *> *sqlSet = [cls dboc_alterTableSqlSetWithFields:propertyNameSet];
+        for (NSString *sql in sqlSet) {
             if (![db executeUpdate:sql]) {
                 res = NO;
                 *rollback = YES;
                 return;
             }
         }
+        res = sqlSet.count > 0 ? res : NO;
     }];
     return res;
 }

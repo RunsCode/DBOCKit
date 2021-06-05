@@ -59,7 +59,7 @@
     return [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
 }
 
-+ (NSArray<NSString *> *)dboc_alterTableSqlArrayWithFields:(NSArray<NSString *> *)fields {
++ (NSSet<NSString *> *)dboc_alterTableSqlSetWithFields:(NSSet<NSString *> *)fields {
     if (fields.count <= 0) {
         return nil;
     }
@@ -77,7 +77,7 @@
             [set addObject:res];
         }
     }
-    return set.allObjects;
+    return set;
 }
 
 static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;

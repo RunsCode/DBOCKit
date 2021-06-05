@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)dboc_defaultCreateTableSql;
 
-+ (NSArray<NSString *> *)dboc_alterTableSqlArrayWithFields:(NSArray<NSString *> *)fields;
++ (NSSet<NSString *> *)dboc_alterTableSqlSetWithFields:(NSSet<NSString *> *)fields;
 
 @end
 
