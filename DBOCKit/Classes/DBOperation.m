@@ -44,10 +44,9 @@
 - (BOOL)createTableWithObjClass:(Class<DBObjectProtocol>)cls {
     NSString *tableName = [cls dboc_tableName];
     BOOL isExists = [self existsTableWithName:tableName];
-    __block BOOL res = YES;
+    __block BOOL res = NO;
     if (isExists) {
-        // check and alert
-        return res;
+        return [self tryAlterTableWithObjClass:cls];
     }
     NSString *sql = [cls dboc_defaultCreateTableSql];
     if (sql.length <= 0) {
@@ -81,7 +80,7 @@
 #pragma mark -- private method
 
 - (BOOL)tryAlterTableWithObjClass:(Class<DBObjectProtocol>)cls {
-    __block BOOL res = YES;
+    __block BOOL res = NO;
     NSString *tableName = [cls dboc_tableName];
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
         NSMutableSet *columnSet = [NSMutableSet setWithCapacity:4];
@@ -91,21 +90,19 @@
             if (column.length <= 0 ) continue;
             [columnSet addObject:column];
         }
-        //
+        // 利用Set去重 然后进行alter
         NSDictionary<NSString *, NSString *> *map = [cls dboc_propertyMap];
         NSMutableSet *propertyNameSet = [NSMutableSet setWithArray:map.allKeys];
         [propertyNameSet minusSet:columnSet];
         //
-
         NSSet<NSString *> *sqlSet = [cls dboc_alterTableSqlSetWithFields:propertyNameSet];
         for (NSString *sql in sqlSet) {
-            if (![db executeUpdate:sql]) {
-                res = NO;
+            res = [db executeUpdate:sql];
+            if (!res) {
                 *rollback = YES;
                 return;
             }
         }
-        res = sqlSet.count > 0 ? res : NO;
     }];
     return res;
 }
