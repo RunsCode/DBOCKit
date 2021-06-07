@@ -11,6 +11,8 @@
 #import <DBOCKit/DBSQLChain.h>
 #import <DBOCKit/IMMessage.h>
 #import <DBOCKit/NSObject+DBObj.h>
+#import <DBOCKit/DBOperaterProtocol.h>
+#import <DBOCKit/DBObjectProtocol.h>
 
 @interface DBViewController ()
 
@@ -22,18 +24,18 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 
-    NSString *sql = [IMMessage dboc_defaultCreateTableSql];
+    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
     NSLog(@"%@", sql);
     //
     IMMessage *message = [IMMessage new];
     @try {
-        [message dboc_customObjClassMap];
+        [message dbocCustomObjClassMap];
     } @catch (NSException *exception) {
         NSLog(@"%@", exception);
     } @finally {
 
     }
-    NSDictionary *map = [message dboc_customObjClassMap];
+    NSDictionary *map = [message dbocCustomObjClassMap];
     NSLog(@"%@", map);
 }
 

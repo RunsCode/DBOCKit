@@ -6,13 +6,14 @@
 //
 
 #import <objc/runtime.h>
+#import <MJExtension/MJExtension.h>
 #include "string_common.h"
 #import "NSObject+DBObj.h"
-#import "DBObjectProtocol.h"
+//#import "DBObjectProtocol.h"
 
-@interface NSObject ()<DBObjectProtocol>
-
-@end
+//@interface NSObject ()//<DBObjectProtocol>
+//
+//@end
 
 @implementation NSObject (DBObj)
 
@@ -27,8 +28,8 @@
     return mutable.allObjects;
 }
 
-+ (NSString *)dboc_defaultCreateTableSql {
-    NSString *table = [self dboc_tableName];
++ (NSString *)dbocDefaultCreateTableSql {
+    NSString *table = [self dbocTableName];
     //
     unsigned int countOfProperty = 0;
     objc_property_t *propertyPtr = class_copyPropertyList(self.class, &countOfProperty);
@@ -59,13 +60,13 @@
     return [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
 }
 
-+ (NSSet<NSString *> *)dboc_alterTableSqlSetWithFields:(NSSet<NSString *> *)fields {
++ (NSSet<NSString *> *)dbocAlterTableSqlSetWithFields:(NSSet<NSString *> *)fields {
     if (fields.count <= 0) {
         return nil;
     }
     const char *prefix = "ALTER TABLE ";
     const char *addColumnSql = "ADD COLUMN ";
-    const char *tName = self.dboc_tableName.UTF8String;
+    const char *tName = self.dbocTableName.UTF8String;
 
     NSMutableSet *set = [NSMutableSet setWithCapacity:fields.count];
     for (NSString *field in fields) {
@@ -81,7 +82,7 @@
 }
 
 static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
-+ (NSDictionary<NSString *, NSString *> *)dboc_propertyMap {
++ (NSDictionary<NSString *, NSString *> *)dbocPropertyMap {
     if (st_propertyMap.count > 0) {
         return st_propertyMap;
     }
@@ -101,6 +102,36 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
     }
     st_propertyMap = [map copy];
     return st_propertyMap;
+}
+
++ (instancetype)dbocObjWithJsonMap:(NSDictionary *)map {
+    if (map.count <= 0) {
+        return nil;
+    }
+    __auto_type obj = [self mj_objectWithKeyValues:map];
+    return obj;
+}
+
++ (NSArray<DBObjectProtocol> *)dbocObjArrayWithArrayJsonMap:(NSArray<NSDictionary *> *)array {
+    if (array.count <= 0) {
+        return nil;
+    }
+    __auto_type obj = [self mj_objectArrayWithKeyValuesArray:array];
+    return obj;
+
+}
+
++ (instancetype)dbocObjWithJsonString:(NSString *)jsonString {
+    if (jsonString.length <= 0) {
+        return nil;
+    }
+    NSDictionary *kv = [jsonString mj_JSONObject];
+    __auto_type obj = [self mj_objectWithKeyValues:kv];
+    return obj;
+}
+
+- (NSString *)dbocJsonString {
+    return self.mj_JSONString;
 }
 
 
@@ -132,18 +163,18 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
 
 #pragma mark -- setter & getter
 
-+ (NSString *)dboc_tableName {
++ (NSString *)dbocTableName {
     if ([self respondsToSelector:@selector(tableName)]) {
         return [self tableName];
     }
     return NSStringFromClass(self);
 }
 
-- (void)setDboc_customObjClassMap:(NSDictionary<NSString *, NSString *> *)dboc_customObjClassMap {
-    objc_setAssociatedObject(self, @selector(dboc_customObjClassMap), dboc_customObjClassMap, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setDbocCustomObjClassMap:(NSDictionary<NSString *,NSString *> *)dbocCustomObjClassMap {
+    objc_setAssociatedObject(self, @selector(dbocCustomObjClassMap), dbocCustomObjClassMap, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSDictionary<NSString *, NSString *> *)dboc_customObjClassMap {
+- (NSDictionary<NSString *,NSString *> *)dbocCustomObjClassMap {
     id obj = objc_getAssociatedObject(self, _cmd);
     if (!obj) {
         unsigned int countOfProperty = 0;
@@ -167,7 +198,7 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
         free(propertyPtr);
         //
         obj = [map copy];
-        self.dboc_customObjClassMap = obj;
+        self.dbocCustomObjClassMap = obj;
     }
     return obj;
 }

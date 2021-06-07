@@ -15,6 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol DBOperaterProtocol <NSObject>
 
+- (instancetype)init __attribute__((unavailable("use initWithDBName:directory: instead")));
++ (instancetype)new __attribute__((unavailable("use initWithDBName:directory: instead")));
+
+- (instancetype)initWithDBName:(NSString *)name directory:(NSString *)dir;
+
 - (BOOL)existsTableWithName:(NSString *)name;
 
 - (BOOL)createTableWithObjClass:(Class<DBObjectProtocol>)cls;
@@ -29,7 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)updateSql:(NSString *)sql observable:(id<DBObserverProtocol>)obj;
 
 /// select
-- (NSArray *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol> _Nullable)cls;
+- (NSArray<NSDictionary<NSString *, id> *> *)selectWithSql:(NSString *)sql;
+- (NSArray<DBObjectProtocol> *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol> _Nullable)cls;
 
 /// count
 - (NSInteger)countWithSql:(NSString *)sql;

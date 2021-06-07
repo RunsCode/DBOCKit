@@ -60,7 +60,7 @@ const size_t MAX_BUFFER_SIZE = 128;
 //    char *testStr = "T@\"IMUser\",C,N,V_msgId";
 //    StringSplit(testStr, dest, "\"", 1);
 //    printf("des = %s \n", dest);
-    NSString *sql = [IMMessage dboc_defaultCreateTableSql];
+    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
     NSLog(@"%@", sql);
     //
     NSDictionary *map = [IMMessage.new dboc_customObjClassMap];

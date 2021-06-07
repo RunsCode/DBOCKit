@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @class IMUser;
 @class IMSession;
 @class IMObject;
+
+
+NS_ASSUME_NONNULL_BEGIN
+
 
 @interface IMMessage : NSObject
 

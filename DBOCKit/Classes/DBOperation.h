@@ -21,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DBOperation : NSObject
 
+- (instancetype)init __attribute__((unavailable("use initWithDBName:directory: instead")));
++ (instancetype)new __attribute__((unavailable("use initWithDBName:directory: instead")));
+
 @end
 
 NS_ASSUME_NONNULL_END

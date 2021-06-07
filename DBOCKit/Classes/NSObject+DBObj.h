@@ -6,20 +6,10 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "DBObjectProtocol.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSObject (DBObj)
-
-@property (nonatomic, copy, readonly, class) NSString *dboc_tableName;
-
-@property (nonatomic, copy, readonly, class) NSDictionary<NSString *, NSString *> *dboc_propertyMap;
-
-@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *dboc_customObjClassMap;
-
-+ (NSString *)dboc_defaultCreateTableSql;
-
-+ (NSSet<NSString *> *)dboc_alterTableSqlSetWithFields:(NSSet<NSString *> *)fields;
+@interface NSObject (DBObj)<DBObjectProtocol>
 
 @end
 

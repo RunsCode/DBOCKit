@@ -16,6 +16,10 @@
 
 @interface DBOperation () <DBOperaterProtocol>
 
+@property (nonatomic, copy) NSString *fileName;
+
+@property (nonatomic, copy) NSString *fileDirctory;
+
 @property (nonatomic, strong) FMDatabaseQueue *dbQueue;
 
 @property (nonatomic, strong) NSMapTable<Class, NSHashTable<DBObserverProtocol> *> *observerMap;
@@ -30,6 +34,15 @@
 }
 #endif
 
+- (instancetype)initWithDBName:(NSString *)name directory:(NSString *)dir {
+    self = [super init];
+    if (self) {
+        _fileName = name;
+        _fileDirctory = dir;
+    }
+    return self;
+}
+
 - (BOOL)existsTableWithName:(NSString *)name {
     if (name.length <= 0) {
         return NO;
@@ -42,13 +55,13 @@
 }
 
 - (BOOL)createTableWithObjClass:(Class<DBObjectProtocol>)cls {
-    NSString *tableName = [cls dboc_tableName];
+    NSString *tableName = [cls dbocTableName];
     BOOL isExists = [self existsTableWithName:tableName];
     __block BOOL res = NO;
     if (isExists) {
         return [self tryAlterTableWithObjClass:cls];
     }
-    NSString *sql = [cls dboc_defaultCreateTableSql];
+    NSString *sql = [cls dbocDefaultCreateTableSql];
     if (sql.length <= 0) {
         return res;
     }
@@ -83,8 +96,29 @@
     return res;
 }
 
-- (NSArray *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls {
-    return @[];
+- (NSArray<NSDictionary<NSString *, id> *> *)selectWithSql:(NSString *)sql {
+    if (sql.length <= 0) {
+        return nil;
+    }
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:8];
+    [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        FMResultSet *resultSet = [db executeQuery:sql];
+        while (resultSet.next) {
+            if (resultSet.resultDictionary) {
+                [results addObject:resultSet.resultDictionary];
+            }
+        }
+    }];
+    return results;
+}
+
+- (NSArray<DBObjectProtocol> *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls {
+    NSArray<NSDictionary *> *results = [self selectWithSql:sql];
+    if (results.count <= 0) {
+        return nil;
+    }
+    NSArray *resultObjArray = [cls dbocObjArrayWithArrayJsonMap:results];
+    return resultObjArray;
 }
 
 - (NSInteger)countWithSql:(NSString *)sql {
@@ -101,9 +135,13 @@
 
 #pragma mark -- private method
 
+- (id<DBObjectProtocol>)objWithJsonString:(NSString *)jsonString cls:(Class<DBObjectProtocol>)cls {
+    return [cls dbocObjWithJsonString:jsonString];
+}
+
 - (BOOL)tryAlterTableWithObjClass:(Class<DBObjectProtocol>)cls {
     __block BOOL res = NO;
-    NSString *tableName = [cls dboc_tableName];
+    NSString *tableName = [cls dbocTableName];
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
         NSMutableSet *columnSet = [NSMutableSet setWithCapacity:4];
         FMResultSet *resultSet = [db getTableSchema:tableName];
@@ -113,11 +151,11 @@
             [columnSet addObject:column];
         }
         // 利用Set去重 然后进行alter
-        NSDictionary<NSString *, NSString *> *map = [cls dboc_propertyMap];
+        NSDictionary<NSString *, NSString *> *map = [cls dbocPropertyMap];
         NSMutableSet *propertyNameSet = [NSMutableSet setWithArray:map.allKeys];
         [propertyNameSet minusSet:columnSet];
         //
-        NSSet<NSString *> *sqlSet = [cls dboc_alterTableSqlSetWithFields:propertyNameSet];
+        NSSet<NSString *> *sqlSet = [cls dbocAlterTableSqlSetWithFields:propertyNameSet];
         for (NSString *sql in sqlSet) {
             res = [db executeUpdate:sql];
             if (!res) {
@@ -181,7 +219,7 @@
 - (FMDatabaseQueue *)dbQueue {
     if (_dbQueue) return _dbQueue;
     //
-    NSString *path = [DBFile pathWithName:nil directory:nil];
+    NSString *path = [DBFile pathWithName:_fileName directory:_fileDirctory];
     _dbQueue = [[FMDatabaseQueue alloc] initWithPath:path];
     return _dbQueue;
 }

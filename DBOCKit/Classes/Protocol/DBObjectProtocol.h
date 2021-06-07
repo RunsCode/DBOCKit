@@ -13,18 +13,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol DBObjectProtocol <NSObject>
-
-@required
-/// fetch table name
-+ (NSString *)tableName;
-
-
 @optional
 
-+ (NSString *)dboc_tableName;
-+ (NSString *)dboc_defaultCreateTableSql;
-+ (NSDictionary<NSString *, NSString *> *)dboc_propertyMap;
-+ (NSSet<NSString *> *)dboc_alterTableSqlSetWithFields:(NSSet<NSString *> *)fields;
+@property (nonatomic, strong, readonly) NSDictionary<NSString *, NSString *> *dbocCustomObjClassMap;
+
+/// fetch table name
++ (NSString *)tableName;
 
 /// Some ignore don't participate in data field of the operation
 /// Example:
@@ -43,9 +37,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-- (void)didFinishConvertToObjByOperation:(id<DBOperaterProtocol>)operater;
+/// implementation by category
++ (NSString *)dbocTableName;
++ (NSString *)dbocDefaultCreateTableSql;
++ (NSDictionary<NSString *, NSString *> *)dbocPropertyMap;
++ (NSSet<NSString *> *)dbocAlterTableSqlSetWithFields:(NSSet<NSString *> *)fields;
 
-- (void)didFinishConvertToJSONStringByOperation:(id<DBOperaterProtocol>)operater;
++ (instancetype _Nullable)dbocObjWithJsonMap:(NSDictionary *)map;
++ (NSArray<DBObjectProtocol> *_Nullable)dbocObjArrayWithArrayJsonMap:(NSArray<NSDictionary *> *)array;
++ (instancetype _Nullable)dbocObjWithJsonString:(NSString *)jsonString;
+- (NSString * _Nullable)dbocJsonString;
+
+
+//@optional
+//
+//- (void)didFinishConvertToObjByOperation:(id<DBOperaterProtocol>)operater;
+//
+//- (void)didFinishConvertToJSONStringByOperation:(id<DBOperaterProtocol>)operater;
 
 
 @end
