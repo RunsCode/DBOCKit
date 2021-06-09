@@ -27,4 +27,6 @@
 }
 
 
+@synthesize primaryKeyId;
+
 @end

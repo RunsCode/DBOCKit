@@ -11,7 +11,10 @@
 #import <DBOCKit/string_common.h>
 #import <DBOCKit/DBSQLChain.h>
 #import <DBOCKit/IMMessage.h>
+#import <DBOCKit/IMSession.h>
 #import <DBOCKit/NSObject+DBObj.h>
+#import <DBOCKit/IMObject.h>
+#import <DBOCKit/DBObjectProtocol.h>
 
 @import XCTest;
 
@@ -48,6 +51,7 @@ const size_t MAX_BUFFER_SIZE = 128;
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+
 }
 
 - (void)tearDown {
@@ -55,16 +59,59 @@ const size_t MAX_BUFFER_SIZE = 128;
     [super tearDown];
 }
 
-- (void)testObjProperty {
-//    char dest[11] = {0};
-//    char *testStr = "T@\"IMUser\",C,N,V_msgId";
-//    StringSplit(testStr, dest, "\"", 1);
-//    printf("des = %s \n", dest);
-    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
-    NSLog(@"%@", sql);
-    //
+- (void)testDiffArray {
+    NSArray *arr1 = @[@1, @"2", @3, @4, @"5"];
+    NSArray *arr2 = @[@4, @"5"];
+    NSOrderedCollectionDifference *coll = [arr1 differenceFromArray:arr2];
+    NSArray *res = [NSArray.new arrayByApplyingDifference:coll];
+    NSLog(@"");
+}
+
+- (void)testInsertSql {
+    IMMessage *m = [IMMessage new];
+    m.time = 214654564.1234;
+    m.dateTime = 4546.236;
+    m.date = 369.321;
+    m.tsObjInt = -23465;
+    m.ts = 23465;
+    m.ignoreInt = 88888;
+    m.session = [IMSession new];
+    m.session.sessionId = @"qwetyyyyy1111";
+    m.immutableArray = @[@1, @"2"];
+    m.immutableSet = @[@3, @"4"];
+
+    NSString *res = [m dbocInsertSql];
+    NSLog(@"%@", res);
+}
+
+- (void)testStrcmp {
+    char buffer[9] = "NSString";
+    int res = strcmp(buffer, "NSString");
+    NSLog(@"%d", res);
+}
+
+- (void)testCStringSplit {
+    char dest[11] = {0};
+    char *testStr = "T@\"IMUser\",C,N,V_msgId";
+    StringSplit(testStr, dest, "\"", 1);
+    printf("des = %s \n", dest);
+}
+
+- (void)testCustomObjClassMap {
     NSDictionary *map = [IMMessage.new dbocCustomObjClassMap];
     NSLog(@"%@", map);
+}
+
+- (void)testDefaultCreateTableSql{
+    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
+    NSLog(@"%@", sql);
+}
+
+- (void)testCategoryExt {
+    IMObject *obj = [IMObject new];
+    NSString *hello = [(id<DBObjectProtocol>)obj dbocInsertSql];
+    NSString *word = [(id<DBObjectProtocol>)obj dbocUpdateSql];
+    NSLog(@"%@, %@", hello, word);
 }
 
 

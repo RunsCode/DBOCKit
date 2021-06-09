@@ -60,4 +60,6 @@
     
 }
 
+@synthesize primaryKeyId;
+
 @end

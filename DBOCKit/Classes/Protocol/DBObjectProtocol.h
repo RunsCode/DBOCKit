@@ -13,6 +13,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol DBObjectProtocol <NSObject>
+
+@required
+@property (nonatomic, assign) NSUInteger primaryKeyId;
+
 @optional
 
 @property (nonatomic, strong, readonly) NSDictionary<NSString *, NSString *> *dbocCustomObjClassMap;
@@ -43,18 +47,18 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary<NSString *, NSString *> *)dbocPropertyMap;
 + (NSSet<NSString *> *)dbocAlterTableSqlSetWithFields:(NSSet<NSString *> *)fields;
 
+/// JSON -> Model
 + (instancetype _Nullable)dbocObjWithJsonMap:(NSDictionary *)map;
-+ (NSArray<DBObjectProtocol> *_Nullable)dbocObjArrayWithArrayJsonMap:(NSArray<NSDictionary *> *)array;
+/// JSON String -> Model
 + (instancetype _Nullable)dbocObjWithJsonString:(NSString *)jsonString;
+/// JSON Array -> Model Array
++ (NSArray<DBObjectProtocol> *_Nullable)dbocObjArrayWithArrayJsonMap:(NSArray<NSDictionary *> *)array;
+/// Model -> JSON String
 - (NSString * _Nullable)dbocJsonString;
 
-
-//@optional
-//
-//- (void)didFinishConvertToObjByOperation:(id<DBOperaterProtocol>)operater;
-//
-//- (void)didFinishConvertToJSONStringByOperation:(id<DBOperaterProtocol>)operater;
-
+///
+- (NSString * _Nullable)dbocInsertSql;
+- (NSString * _Nullable)dbocUpdateSql;
 
 @end
 

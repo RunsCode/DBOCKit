@@ -163,12 +163,20 @@
 }
 
 #pragma mark -- Convenience methods
-- (BOOL)isnertOrUpdateObj:(id<DBObjectProtocol>)obj {
-    return YES;
+- (BOOL)insertOrUpdateObj:(id<DBObjectProtocol>)obj {
+    if (obj.primaryKeyId <= 0) {
+        return [self insertObj:obj];
+    }
+    return [self insertOrUpdateObj:obj];
 }
 
 - (NSArray<DBObjectProtocol> *)fecthWithClass:(Class<DBObjectProtocol>)cls {
-    return @[];
+    NSString *tableName = [cls dbocTableName];
+    if (isAbnormalString(tableName)) {
+        return nil;
+    }
+    NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@", tableName];
+    return [self selectWithSql:sql objClass:cls];
 }
 
 
@@ -210,6 +218,16 @@
 }
 
 #pragma mark -- private method
+
+- (BOOL)insertObj:(id<DBObjectProtocol>)obj {
+    return NO;
+}
+
+- (BOOL)udpateObj:(id<DBObjectProtocol>)obj {
+    //
+    [self fireEventWithObj:obj];
+    return NO;
+}
 
 - (id<DBObjectProtocol>)objWithJsonString:(NSString *)jsonString cls:(Class<DBObjectProtocol>)cls {
     return [cls dbocObjWithJsonString:jsonString];

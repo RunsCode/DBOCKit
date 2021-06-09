@@ -35,15 +35,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)updateSql:(NSString *)sql observable:(id<DBObjectProtocol>)obj;
 
 /// select
-- (NSArray<NSDictionary<NSString *, id> *> *)selectWithSql:(NSString *)sql;
-- (NSArray<DBObjectProtocol> *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol> _Nullable)cls;
+- (NSArray<NSDictionary<NSString *, id> *> * _Nullable)selectWithSql:(NSString *)sql;
+- (NSArray<DBObjectProtocol> *_Nullable)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol> _Nullable)cls;
 
 /// count
 - (NSUInteger)countWithSql:(NSString *)sql;
 
 /// convenience methods
-- (BOOL)isnertOrUpdateObj:(id<DBObjectProtocol>)obj;
-- (NSArray<DBObjectProtocol> *)fecthWithClass:(Class<DBObjectProtocol>)cls;
+- (BOOL)insertOrUpdateObj:(id<DBObjectProtocol>)obj;
+- (NSArray<DBObjectProtocol> * _Nullable)fecthWithClass:(Class<DBObjectProtocol>)cls;
 
 /// observer
 - (void)addObserver:(id<DBObserverProtocol>)observer;
