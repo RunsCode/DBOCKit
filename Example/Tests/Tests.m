@@ -63,7 +63,7 @@ const size_t MAX_BUFFER_SIZE = 128;
     NSString *sql = [IMMessage dbocDefaultCreateTableSql];
     NSLog(@"%@", sql);
     //
-    NSDictionary *map = [IMMessage.new dboc_customObjClassMap];
+    NSDictionary *map = [IMMessage.new dbocCustomObjClassMap];
     NSLog(@"%@", map);
 }
 

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol DBOperaterProtocol;
+@protocol DBOperatorProtocol;
 
 typedef NS_ENUM(NSUInteger, DBSQLChainActionEnum) {
     DBSQLChainActionCreate = 0,
@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) DBSQLChain *(^table)(const char *tName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^from)(const char *tName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^field)(const char *fieldName);
-@property (nonatomic, strong, readonly) DBSQLChain *(^count)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^count)(const char *_Nullable fieldName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^orderBy)(const char *fieldName);
 
 @end
@@ -73,6 +73,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DBSQLChain (Assist)
 
+/// 星号 *
+@property (nonatomic, strong, readonly) DBSQLChain *asterisk;
 /// 逗号
 @property (nonatomic, strong, readonly) DBSQLChain *comma;
 /// 分号

@@ -9,16 +9,13 @@
 #import <fmdb/FMDB.h>
 #import "DBFile.h"
 #import "DBOperation.h"
-#import "DBOperaterProtocol.h"
+#import "DBOperatorProtocol.h"
 #import "DBObserverProtocol.h"
 #import "DBObjectProtocol.h"
 #import "NSObject+DBObj.h"
+#import "NSString+Tool.h"
 
-@interface DBOperation () <DBOperaterProtocol>
-
-@property (nonatomic, copy) NSString *fileName;
-
-@property (nonatomic, copy) NSString *fileDirctory;
+@interface DBOperation () <DBOperatorProtocol>
 
 @property (nonatomic, strong) FMDatabaseQueue *dbQueue;
 
@@ -34,17 +31,36 @@
 }
 #endif
 
+- (instancetype)initWithDBURL:(NSURL *)url {
+    self = [super init];
+    if (self) {
+        NSAssert(nil != url, @"DBCO Error init db with url, due to url: %@ is nil", url);
+        _dbQueue = [[FMDatabaseQueue alloc] initWithURL:url];
+    }
+    return self;
+}
+
+- (instancetype)initWithDBPath:(NSString *)path {
+    self = [super init];
+    if (self) {
+        NSAssert(!isAbnormalString(path), @"DBCO Error init db with path, due to path: %@ is illegal", path);
+        _dbQueue = [[FMDatabaseQueue alloc] initWithPath:path];
+    }
+    return self;
+}
+
 - (instancetype)initWithDBName:(NSString *)name directory:(NSString *)dir {
     self = [super init];
     if (self) {
-        _fileName = name;
-        _fileDirctory = dir;
+        NSString *path = [DBFile pathWithName:name directory:dir];
+        NSAssert(!isAbnormalString(path), @"DBCO Error initWithDBName, due to path is illegal that maybe name: %@, or dir: %@ is illagal", name, dir);
+        _dbQueue = [[FMDatabaseQueue alloc] initWithPath:path];
     }
     return self;
 }
 
 - (BOOL)existsTableWithName:(NSString *)name {
-    if (name.length <= 0) {
+    if (isAbnormalString(name)) {
         return NO;
     }
     __block BOOL res = NO;
@@ -62,33 +78,39 @@
         return [self tryAlterTableWithObjClass:cls];
     }
     NSString *sql = [cls dbocDefaultCreateTableSql];
-    if (sql.length <= 0) {
+    if (isAbnormalString(sql)) {
         return res;
     }
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        res = [db executeUpdate:sql];
+        NSError *err = nil;
+        res = [db executeUpdate:sql withErrorAndBindings:&err];
+        if (err) NSLog(@"DBOC Create Error: %@, sql: %@", err, sql);
     }];
     return res;
 }
 
 - (BOOL)executeWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls {
-    if (sql.length <= 0) {
+    if (isAbnormalString(sql)) {
         return NO;
     }
     __block BOOL res = NO;
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        res = [db executeUpdate:sql];
+        NSError *err = nil;
+        res = [db executeUpdate:sql withErrorAndBindings:&err];
+        if (err) NSLog(@"DBOC Execute Error: %@, sql: %@", err, sql);
     }];
     return YES;
 }
 
-- (BOOL)updateSql:(NSString *)sql observable:(id<DBObserverProtocol>)obj {
-    if (sql.length <= 0) {
+- (BOOL)updateSql:(NSString *)sql observable:(id<DBObjectProtocol>)obj {
+    if (isAbnormalString(sql)) {
         return NO;
     }
     __block BOOL res = NO;
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        res = [db executeUpdate:sql];
+        NSError *err = nil;
+        res = [db executeUpdate:sql withErrorAndBindings:&err];
+        if (err) NSLog(@"DBOC Update Error: %@, sql: %@", err, sql);
     }];
     if (res) {
         [self fireEventWithObj:obj];
@@ -97,12 +119,14 @@
 }
 
 - (NSArray<NSDictionary<NSString *, id> *> *)selectWithSql:(NSString *)sql {
-    if (sql.length <= 0) {
+    if (isAbnormalString(sql)) {
         return nil;
     }
     NSMutableArray *results = [NSMutableArray arrayWithCapacity:8];
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        FMResultSet *resultSet = [db executeQuery:sql];
+        NSError *err = nil;
+        FMResultSet *resultSet = [db executeQuery:sql values:nil error:&err];
+        if (err) NSLog(@"DBOC Query Error: %@, sql: %@", err, sql);
         while (resultSet.next) {
             if (resultSet.resultDictionary) {
                 [results addObject:resultSet.resultDictionary];
@@ -121,16 +145,68 @@
     return resultObjArray;
 }
 
-- (NSInteger)countWithSql:(NSString *)sql {
-    if (sql.length <= 0) {
+- (NSUInteger)countWithSql:(NSString *)sql {
+    if (isAbnormalString(sql)) {
         return 0;
     }
     __block NSUInteger count = 0;
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        FMResultSet *res = [db executeQuery:sql];
-        count = [res longForColumnIndex:0];
+        NSError *err = nil;
+        FMResultSet *res = [db executeQuery:sql values:nil error:&err];
+        if (err) NSLog(@"DBOC Query Error: %@, sql: %@", err, sql);
+        while (res.next) {
+            count = [res longForColumnIndex:0];
+            NSLog(@"count = %lu", (unsigned long)count);
+        }
     }];
     return count;
+}
+
+#pragma mark -- Convenience methods
+- (BOOL)isnertOrUpdateObj:(id<DBObjectProtocol>)obj {
+    return YES;
+}
+
+- (NSArray<DBObjectProtocol> *)fecthWithClass:(Class<DBObjectProtocol>)cls {
+    return @[];
+}
+
+
+#pragma mark -- observer
+
+- (void)addObserver:(id<DBObserverProtocol>)observer {
+    if (!observer) return;
+    //
+    NSArray<Class> *arr = [observer observeObjClassArray];
+    if (arr.count <= 0) return;
+    //
+    for (Class cls in arr) {
+        NSHashTable *t = [self.observerMap objectForKey:cls];
+        if (!t) {
+            t = [NSHashTable weakObjectsHashTable];
+            [self.observerMap setObject:(NSHashTable<DBObserverProtocol> *)t forKey:cls];
+        }
+        if ([t containsObject:observer]) continue;
+        //
+        [t addObject:observer];
+    }
+}
+
+- (void)removeObserver:(id<DBObserverProtocol>)observer {
+    if (!observer) return;
+    //
+    NSArray<Class> *arr = [observer observeObjClassArray];
+    if (arr.count <= 0) return;
+    //
+    for (Class cls in arr) {
+        NSHashTable *t = [self.observerMap objectForKey:cls];
+        if (!t) continue;
+        //
+        [t removeObject:observer];
+        if (t.count <= 0) {
+            [self.observerMap removeObjectForKey:cls];
+        }
+    }
 }
 
 #pragma mark -- private method
@@ -177,52 +253,7 @@
     }
 }
 
-#pragma mark -- observer
-
-- (void)addObserver:(id<DBObserverProtocol>)observer {
-    if (!observer) return;
-    //
-    NSArray<Class> *arr = [observer observeObjClassArray];
-    if (arr.count <= 0) return;
-    //
-    for (Class cls in arr) {
-        NSHashTable *t = [self.observerMap objectForKey:cls];
-        if (!t) {
-            t = [NSHashTable weakObjectsHashTable];
-            [self.observerMap setObject:(NSHashTable<DBObserverProtocol> *)t forKey:cls];
-        }
-        if ([t containsObject:observer]) continue;
-        //
-        [t addObject:observer];
-    }
-}
-
-- (void)removeObserver:(id<DBObserverProtocol>)observer {
-    if (!observer) return;
-    //
-    NSArray<Class> *arr = [observer observeObjClassArray];
-    if (arr.count <= 0) return;
-    //
-    for (Class cls in arr) {
-        NSHashTable *t = [self.observerMap objectForKey:cls];
-        if (!t) continue;
-        //
-        [t removeObject:observer];
-        if (t.count <= 0) {
-            [self.observerMap removeObjectForKey:cls];
-        }
-    }
-}
-
 #pragma mark -- getter
-
-- (FMDatabaseQueue *)dbQueue {
-    if (_dbQueue) return _dbQueue;
-    //
-    NSString *path = [DBFile pathWithName:_fileName directory:_fileDirctory];
-    _dbQueue = [[FMDatabaseQueue alloc] initWithPath:path];
-    return _dbQueue;
-}
 
 - (NSMapTable<Class, NSHashTable<DBObserverProtocol> *> *)observerMap {
     if (_observerMap) return _observerMap;

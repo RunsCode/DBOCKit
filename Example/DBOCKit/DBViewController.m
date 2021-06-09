@@ -11,7 +11,7 @@
 #import <DBOCKit/DBSQLChain.h>
 #import <DBOCKit/IMMessage.h>
 #import <DBOCKit/NSObject+DBObj.h>
-#import <DBOCKit/DBOperaterProtocol.h>
+#import <DBOCKit/DBOperatorProtocol.h>
 #import <DBOCKit/DBObjectProtocol.h>
 
 @interface DBViewController ()

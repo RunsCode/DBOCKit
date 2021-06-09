@@ -16,13 +16,15 @@
 
 
 #import <Foundation/Foundation.h>
+#import "DBOperatorProtocol.h"
+
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DBOperation : NSObject
+@interface DBOperation : NSObject<DBOperatorProtocol>
 
-- (instancetype)init __attribute__((unavailable("use initWithDBName:directory: instead")));
-+ (instancetype)new __attribute__((unavailable("use initWithDBName:directory: instead")));
+- (instancetype)init __attribute__((unavailable("use protocol `DBOperatorProtocol` init method instead")));
++ (instancetype)new __attribute__((unavailable("use protocol `DBOperatorProtocol` init method instead")));
 
 @end
 

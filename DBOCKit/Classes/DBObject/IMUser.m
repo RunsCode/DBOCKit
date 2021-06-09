@@ -18,11 +18,11 @@
     return @"t_hello_user";
 }
 
-- (void)didFinishConvertToObjByOperation:(id<DBOperaterProtocol>)operater {
+- (void)didFinishConvertToObjByOperation:(id<DBOperatorProtocol>)operater {
 
 }
 
-- (void)didFinishConvertToJSONStringByOperation:(id<DBOperaterProtocol>)operater {
+- (void)didFinishConvertToJSONStringByOperation:(id<DBOperatorProtocol>)operater {
 
 }
 

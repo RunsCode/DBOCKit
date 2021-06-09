@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol DBOperaterProtocol;
+@protocol DBOperatorProtocol;
 
 NS_ASSUME_NONNULL_BEGIN
 
