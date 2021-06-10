@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class DBSqlObject;
 @protocol DBOperatorProtocol;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -18,8 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSUInteger primaryKeyId;
 
 @optional
-
-@property (nonatomic, strong, readonly) NSDictionary<NSString *, NSString *> *dbocCustomObjClassMap;
+/// [field:NonBasicValueType]
+@property (nonatomic, strong, readonly) NSDictionary<NSString *, NSString *> *dbocNonBasicValueTypeClassMap;
 
 /// fetch table name
 + (NSString *)tableName;
@@ -43,6 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// implementation by category
 + (NSString *)dbocTableName;
++ (NSSet<NSString *> *)dbocIgnoreFields;
 + (NSString *)dbocDefaultCreateTableSql;
 + (NSDictionary<NSString *, NSString *> *)dbocPropertyMap;
 + (NSSet<NSString *> *)dbocAlterTableSqlSetWithFields:(NSSet<NSString *> *)fields;
@@ -57,8 +58,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString * _Nullable)dbocJsonString;
 
 ///
-- (NSString * _Nullable)dbocInsertSql;
-- (NSString * _Nullable)dbocUpdateSql;
+- (DBSqlObject *_Nullable)dbocInsertSqlObj;
+- (DBSqlObject *_Nullable)dbocUpdateSqlObj;
 
 @end
 

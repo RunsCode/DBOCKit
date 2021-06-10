@@ -14,6 +14,7 @@
 #import "DBObjectProtocol.h"
 #import "NSObject+DBObj.h"
 #import "NSString+Tool.h"
+#import "DBSqlObject.h"
 
 @interface DBOperation () <DBOperatorProtocol>
 
@@ -156,13 +157,14 @@
         if (err) NSLog(@"DBOC Query Error: %@, sql: %@", err, sql);
         while (res.next) {
             count = [res longForColumnIndex:0];
-            NSLog(@"count = %lu", (unsigned long)count);
+            //NSLog(@"count = %lu", (unsigned long)count);
         }
     }];
     return count;
 }
 
 #pragma mark -- Convenience methods
+
 - (BOOL)insertOrUpdateObj:(id<DBObjectProtocol>)obj {
     if (obj.primaryKeyId <= 0) {
         return [self insertObj:obj];
@@ -220,13 +222,42 @@
 #pragma mark -- private method
 
 - (BOOL)insertObj:(id<DBObjectProtocol>)obj {
-    return NO;
+    DBSqlObject *sqlObj = [obj dbocInsertSqlObj];
+    if (isAbnormalString(sqlObj.sql) || sqlObj.values.count <= 0) {
+        NSLog(@"DBOC INSERT Occured Error. Maybe `values` is empty or sql: %@", sqlObj.sql);
+        return NO;
+    }
+    __block BOOL res = NO;
+    [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        NSError *err = nil;
+        res = [db executeUpdate:sqlObj.sql values:sqlObj.values error:&err];
+        if (!res || err) {
+            NSLog(@"DBOC INSERT Failed, sql: %@, error: %@", sqlObj.sql, err);
+            return;
+        }
+        obj.primaryKeyId = db.lastInsertRowId;
+    }];
+    return res;
 }
 
 - (BOOL)udpateObj:(id<DBObjectProtocol>)obj {
-    //
-    [self fireEventWithObj:obj];
-    return NO;
+    DBSqlObject *sqlObj = [obj dbocUpdateSqlObj];
+    if (isAbnormalString(sqlObj.sql) || sqlObj.values.count <= 0) {
+        NSLog(@"DBOC UPDATE Occured Error. Maybe `values` is empty or sql: %@", sqlObj.sql);
+        return NO;
+    }
+    __block BOOL res = NO;
+    [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        NSError *err = nil;
+        res = [db executeUpdate:sqlObj.sql values:sqlObj.values error:&err];
+        if (!res || err) {
+            NSLog(@"DBOC UPDATE Failed, sql: %@, error: %@", sqlObj.sql, err);
+        }
+    }];
+    if (res) {
+        [self fireEventWithObj:obj];
+    }
+    return res;
 }
 
 - (id<DBObjectProtocol>)objWithJsonString:(NSString *)jsonString cls:(Class<DBObjectProtocol>)cls {

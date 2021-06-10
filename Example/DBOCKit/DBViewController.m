@@ -24,19 +24,19 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 
-    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
-    NSLog(@"%@", sql);
-    //
-    IMMessage *message = [IMMessage new];
-    @try {
-        [message dbocCustomObjClassMap];
-    } @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    } @finally {
-
-    }
-    NSDictionary *map = [message dbocCustomObjClassMap];
-    NSLog(@"%@", map);
+//    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
+//    NSLog(@"%@", sql);
+//    //
+//    IMMessage *message = [IMMessage new];
+//    @try {
+//        [message dbocNonBasicValueTypeClassMap];
+//    } @catch (NSException *exception) {
+//        NSLog(@"%@", exception);
+//    } @finally {
+//
+////    }
+//    NSDictionary *map = [message dbocNonBasicValueTypeClassMap];
+//    NSLog(@"%@", map);
 }
 
 - (void)didReceiveMemoryWarning

@@ -6,7 +6,14 @@
 //
 
 #import "IMObject.h"
+//#import "DBObjectProtocol.h"
+
+@interface IMObject ()//<DBObjectProtocol>
+
+@end
 
 @implementation IMObject
+
+//@synthesize primaryKeyId;
 
 @end

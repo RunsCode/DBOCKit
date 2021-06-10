@@ -15,6 +15,9 @@
 #import <DBOCKit/NSObject+DBObj.h>
 #import <DBOCKit/IMObject.h>
 #import <DBOCKit/DBObjectProtocol.h>
+#import <DBOCKit/IMUser.h>
+#import <DBOCKit/IMObject.h>
+#import <DBOCKit/DBSqlObject.h>
 
 @import XCTest;
 
@@ -60,14 +63,14 @@ const size_t MAX_BUFFER_SIZE = 128;
 }
 
 - (void)testDiffArray {
-    NSArray *arr1 = @[@1, @"2", @3, @4, @"5"];
-    NSArray *arr2 = @[@4, @"5"];
-    NSOrderedCollectionDifference *coll = [arr1 differenceFromArray:arr2];
-    NSArray *res = [NSArray.new arrayByApplyingDifference:coll];
-    NSLog(@"");
+//    NSArray *arr1 = @[@1, @"2", @3, @4, @"5"];
+//    NSArray *arr2 = @[@4, @"5"];
+//    NSOrderedCollectionDifference *coll = [arr1 differenceFromArray:arr2];
+//    NSArray *res = [NSArray.new arrayByApplyingDifference:coll];
+//    NSLog(@"");
 }
 
-- (void)testInsertSql {
+- (IMMessage *)ferchMessage {
     IMMessage *m = [IMMessage new];
     m.time = 214654564.1234;
     m.dateTime = 4546.236;
@@ -75,13 +78,53 @@ const size_t MAX_BUFFER_SIZE = 128;
     m.tsObjInt = -23465;
     m.ts = 23465;
     m.ignoreInt = 88888;
+    m.ignoreString = @"ignoreString";
     m.session = [IMSession new];
-    m.session.sessionId = @"qwetyyyyy1111";
+    m.session.sessionId = @"第一条数据";
     m.immutableArray = @[@1, @"2"];
-    m.immutableSet = @[@3, @"4"];
+    m.immutableSet = [NSSet setWithArray:@[@3, @"4"]];
+    m.immutableDictionary = @{ @"q" : @"hjuikol", @"sss": @"456798"};
+    m.mutableArray = @[@1, @"2", @3].mutableCopy;
+    m.mutableDictionary = @{ @"q" : @"hjuikol", @"sss": @"456798", @"mutable" : @"mutable"}.mutableCopy;
+    m.type = 45;
+    m.msgId = @"qwertyuiop4569632178";
+    m.fromUser = [IMUser new];
+    m.fromUser.nickName = @"大侠01";
+    m.fromUser.age = 25;
+    m.fromUser.role = 0;
+    m.fromUser.sex = 0;
+    m.fromUser.avatar = @"asdasdasd";
+    m.targetUser = [IMUser new];
+    m.targetUser.nickName = @"大侠02";
+    m.targetUser.age = 48;
+    m.targetUser.role = 1;
+    m.targetUser.sex = 0;
+    m.targetUser.avatar = @"头像url";
+    m.originData = [NSData data];
+    m.dayDate = [NSDate date];
 
-    NSString *res = [m dbocInsertSql];
-    NSLog(@"%@", res);
+    IMObject *obj0 = [IMObject new];
+    obj0.text = @"IMObject";
+    IMObject *obj1 = [IMObject new];
+    obj1.text = @"IMObject 1";
+    IMObject *obj2 = [IMObject new];
+    obj2.text = @"IMObject 2";
+    m.imObjs = @[obj0, obj1, obj2];
+    m.primaryKeyId = 10086;
+    return m;
+}
+
+- (void)testInsertSql {
+    IMMessage *m = [self ferchMessage];
+    DBSqlObject *obj = [m dbocInsertSqlObj];
+    NSLog(@"sql = %@", obj.sql);
+    NSLog(@"values = %@", obj.values);
+}
+- (void)testUpdateSql {
+    IMMessage *m = [self ferchMessage];
+    DBSqlObject *obj = [m dbocUpdateSqlObj];
+    NSLog(@"sql = %@", obj.sql);
+    NSLog(@"values = %@", obj.values);
 }
 
 - (void)testStrcmp {
@@ -98,7 +141,7 @@ const size_t MAX_BUFFER_SIZE = 128;
 }
 
 - (void)testCustomObjClassMap {
-    NSDictionary *map = [IMMessage.new dbocCustomObjClassMap];
+    NSDictionary *map = [IMMessage.new dbocNonBasicValueTypeClassMap];
     NSLog(@"%@", map);
 }
 
@@ -109,9 +152,13 @@ const size_t MAX_BUFFER_SIZE = 128;
 
 - (void)testCategoryExt {
     IMObject *obj = [IMObject new];
-    NSString *hello = [(id<DBObjectProtocol>)obj dbocInsertSql];
-    NSString *word = [(id<DBObjectProtocol>)obj dbocUpdateSql];
-    NSLog(@"%@, %@", hello, word);
+    [(id<DBObjectProtocol>)obj dbocInsertSqlObj];
+    [(id<DBObjectProtocol>)obj dbocUpdateSqlObj];
+}
+
+- (void)testCreateMessageTable {
+    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
+//    self.dbocPropertyMap
 }
 
 

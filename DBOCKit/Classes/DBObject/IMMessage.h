@@ -51,6 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSArray<IMObject *> *imObjs;
 
+@property (nonatomic, strong) NSData *originData;
+
+@property (nonatomic, strong) NSDate *dayDate;
+
 @end
 
 NS_ASSUME_NONNULL_END

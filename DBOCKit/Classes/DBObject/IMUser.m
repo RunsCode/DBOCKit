@@ -7,7 +7,8 @@
 
 #import "IMUser.h"
 #import "DBObjectProtocol.h"
-
+#import "NSObject+DBObj.h"
+#import <MJExtension/MJExtension.h>
 @interface IMUser ()<DBObjectProtocol>
 
 @end
@@ -18,14 +19,9 @@
     return @"t_hello_user";
 }
 
-- (void)didFinishConvertToObjByOperation:(id<DBOperatorProtocol>)operater {
-
++ (NSArray *)mj_ignoredPropertyNames {
+    return [self.dbocIgnoreFields allObjects];
 }
-
-- (void)didFinishConvertToJSONStringByOperation:(id<DBOperatorProtocol>)operater {
-
-}
-
 
 @synthesize primaryKeyId;
 

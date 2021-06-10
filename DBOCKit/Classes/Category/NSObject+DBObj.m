@@ -5,12 +5,14 @@
 //  Created by WangYajun on 2021/6/4.
 //
 
+#include "string_common.h"
 #import <objc/runtime.h>
 #import <MJExtension/MJExtension.h>
-#include "string_common.h"
 #import "NSObject+DBObj.h"
 #import "NSString+Tool.h"
-//#import "DBObjectProtocol.h"
+#import "DBObjectProtocol.h"
+#import "DBSqlObject.h"
+#include "stdlib.h"
 
 //@interface NSObject ()//<DBObjectProtocol>
 //
@@ -21,7 +23,14 @@
 @dynamic primaryKeyId;
 
 + (NSSet<NSString *> *)dbocIgnoreFields {
-    NSMutableSet *mutable = [NSMutableSet setWithObjects:@"hash", @"superclass", @"description", @"debugDescription", nil];
+    NSMutableSet *mutable = [NSMutableSet setWithObjects:
+                             @"hash",
+                             @"superclass",
+                             @"description",
+                             @"debugDescription",
+                             @"primaryKeyId",
+                             @"dbocNonBasicValueTypeClassMap",
+                             nil];
     if ([self respondsToSelector:@selector(ignoreTheFields)]) {
         NSArray *res = [self ignoreTheFields];
         if (res) {
@@ -41,7 +50,6 @@
     MutableMemoryCopyDest(buffer, prefix, table.UTF8String, pkSql, NULL);
     //
     NSMutableSet<NSString *> *ignoreFields = self.dbocIgnoreFields.mutableCopy;
-    [ignoreFields addObject:@"primaryKeyId"];
     //
     NSDictionary<NSString *, NSString *> *map = [self dbocPropertyMap];
     NSMutableSet *propertySet = [NSMutableSet setWithArray:map.allKeys];
@@ -109,40 +117,96 @@
 /**
  INSERT INTO JYHitchMessage(data,myUserId,bizType,passengerOrderGuid,driverOrderGuid,msgId,type,fromUserGuid,fromAvatarIndex,fromAvatarUrl,fromNickname,toUserGuid,toAvatarIndex,toAvatarUrl,toNickName,ts,localRead,localState,os,ignore,readReceipt,quickMsgType,implicit) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
  */
-- (NSString *)dbocInsertSql {
+
+- (id)valueTransfrom:(id)obj {
+    NSObject *value = obj;
+    if ([value isKindOfClass:NSSet.class]) {
+        value = ((NSSet *)value).allObjects;
+    }
+    if ([value isKindOfClass:NSArray.class]) {
+        NSSet<NSString *> *ignoreSet = [self.class dbocIgnoreFields];
+        value = [value.class mj_keyValuesArrayWithObjectArray:(NSArray *)value ignoredKeys:ignoreSet.allObjects];
+        return [value dbocJsonString];
+    }
+    if ([value isKindOfClass:NSDate.class]) {
+        return @(((NSDate *)value).timeIntervalSince1970).stringValue;
+    }
+    if ([value isKindOfClass:NSData.class]) {
+        return value;
+    }
+    return [value dbocJsonString];
+}
+
+- (DBSqlObject *)dbocInsertSqlObj {
     NSString *tName = [self.class dbocTableName];
-    NSDictionary *map = [self.class dbocPropertyMap];
-    NSMutableSet *propertySet = [NSMutableSet setWithArray:map.allKeys];
+    if (isAbnormalString(tName))  return nil;
+    //
+    NSMutableSet *propertySet = [NSMutableSet setWithArray:self.class.dbocPropertyMap.allKeys];
+    NSSet<NSString *> *ignoreSet = [self.class dbocIgnoreFields];
+    [propertySet minusSet:ignoreSet];
+    //
+    NSArray<NSString *> *objTypeArray = self.dbocNonBasicValueTypeClassMap.allKeys;
     NSMutableArray *symbolArray = [NSMutableArray arrayWithCapacity:propertySet.count];
     NSMutableArray *valueArray = [NSMutableArray arrayWithCapacity:propertySet.count];
 
-    NSSet<NSString *> *ignoreSet = [self.class dbocIgnoreFields];
-    [propertySet minusSet:ignoreSet];
     for (NSString *propertyName in propertySet) {
-
         [symbolArray addObject:@"?"];
         id<DBObjectProtocol> value = [self valueForKey:propertyName];
-        if (!value) value = @"";
-        BOOL hasCustomObj = [self.dbocCustomObjClassMap.allKeys containsObject:propertyName];
-        if (hasCustomObj) {
-            value = [value dbocJsonString];
+        if (!value) {
+            [valueArray addObject:@""];
+            continue;
+        }
+        //
+        BOOL isOCObj = [objTypeArray containsObject:propertyName];
+        if (isOCObj) {//非基本类型 转 json string
+            value = [self valueTransfrom:value];
         }
         [valueArray addObject:value];
     }
-
-    NSString *keySql = [propertySet.allObjects componentsJoinedByString:@","];
-    NSString *symbolSql = [symbolArray componentsJoinedByString:@","];
     char buffer[1024] = {0};
-    MutableMemoryCopyDest(buffer, "INSERT INTO ", tName.uppercaseString, " (" , keySql, ") VALUES (", symbolSql, ");" ,NULL);
-    return [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
+    const char *keySql = [propertySet.allObjects componentsJoinedByString:@", "].UTF8String;
+    const char *symbolSql = [symbolArray componentsJoinedByString:@", "].UTF8String;;
+    MutableMemoryCopyDest(buffer, "INSERT INTO ", tName.UTF8String, " (" , keySql, ") VALUES (", symbolSql, ");", NULL);
+    NSString *sql = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
+    //
+    return [DBSqlObject objWithSql:sql values:valueArray];
 }
 
 /**
  UPDATE JYHitchConversation SET  myUserGuid=?, bizType=?, driverOrderGuid=?, passengerOrderGuid=?, userGuid=?, nickname=?, avatar=?, avatarIndex=?, message=?, lastMessageData=?, lastMessageFromUserGuid=?, lastMessageType=?, ts=?, unread=?, readReceipt=? WHERE pk = ?;
 
  */
-- (NSString *)dbocUpdateSql {
-    return @"WORD";
+- (DBSqlObject *)dbocUpdateSqlObj {
+    NSString *tName = [self.class dbocTableName];
+    if (isAbnormalString(tName))  return nil;
+    //
+    NSMutableSet *propertySet = [NSMutableSet setWithArray:self.class.dbocPropertyMap.allKeys];
+    NSSet<NSString *> *ignoreSet = [self.class dbocIgnoreFields];
+    [propertySet minusSet:ignoreSet];
+    //
+    NSArray<NSString *> *objTypeArray = self.dbocNonBasicValueTypeClassMap.allKeys;
+    NSMutableArray *valueArray = [NSMutableArray arrayWithCapacity:propertySet.count];
+    for (NSString *propertyName in propertySet) {
+        id<DBObjectProtocol> value = [self valueForKey:propertyName];
+        if (!value) {
+            [valueArray addObject:@""];
+            continue;
+        }
+        //
+        BOOL isOCObj = [objTypeArray containsObject:propertyName];
+        if (isOCObj) {//非基本类型 转 json string
+            value = [self valueTransfrom:value];
+        }
+        [valueArray addObject:value];
+    }
+    char buffer[1024] = {0};
+    char primaryKeyId[64] = {0};
+    sprintf(primaryKeyId, "%lu;", (unsigned long)self.primaryKeyId);
+    const char *keySql = [propertySet.allObjects componentsJoinedByString:@"=?, "].UTF8String;
+    MutableMemoryCopyDest(buffer, "UPDATE ", tName.UTF8String, " SET " , keySql, "=?, WHERE primaryKeyId=", primaryKeyId, NULL);
+    NSString *sql = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
+    //
+    return [DBSqlObject objWithSql:sql values:valueArray];;
 }
 
 
@@ -204,12 +268,12 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
     return NSStringFromClass(self);
 }
 
-- (void)setDbocCustomObjClassMap:(NSDictionary<NSString *,NSString *> *)dbocCustomObjClassMap {
-    objc_setAssociatedObject(self, @selector(dbocCustomObjClassMap), dbocCustomObjClassMap, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setDbocNonBasicValueTypeClassMap:(NSDictionary<NSString *,NSString *> *)dbocNonBasicValueTypeClassMap {
+    objc_setAssociatedObject(self, @selector(dbocNonBasicValueTypeClassMap), dbocNonBasicValueTypeClassMap, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-/// [field:custom]
-- (NSDictionary<NSString *,NSString *> *)dbocCustomObjClassMap {
+/// [field:NonBasicValueType]
+- (NSDictionary<NSString *,NSString *> *)dbocNonBasicValueTypeClassMap {
     id obj = objc_getAssociatedObject(self, _cmd);
     if (!obj) {
         unsigned int countOfProperty = 0;
@@ -224,6 +288,7 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
             StringSplit(type, buffer, "\"", 1);
             if (0 == strlen(buffer)) continue;
             if (0 == strcmp(buffer, "NSString")) continue;
+            if (0 == strcmp(buffer, "NSData")) continue;
             //
             NSString *key = [NSString stringWithCString:field encoding:NSUTF8StringEncoding];
             NSString *value = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
@@ -233,7 +298,7 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
         free(propertyPtr);
         //
         obj = [map copy];
-        self.dbocCustomObjClassMap = obj;
+        self.dbocNonBasicValueTypeClassMap = obj;
     }
     return obj;
 }

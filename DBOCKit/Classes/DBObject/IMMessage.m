@@ -12,6 +12,7 @@
 #import "IMSession.h"
 #import "DBObjectProtocol.h"
 #import <objc/runtime.h>
+#import <MJExtension/MJExtension.h>
 /** SQLite五种数据类型 */
 #define SQLTEXT     @"TEXT"
 #define SQLDOUBLE   @"DOUBLE"
@@ -49,6 +50,12 @@
 + (NSDictionary<NSString *,Class> *)arrayElementtFiledMapping {
     return @{
         NSStringFromSelector(@selector(imObjs)): IMObject.class,
+    };
+}
+
++ (NSDictionary *)mj_objectClassInArray {
+    return @{
+        @"imObjs" : @"IMObject"
     };
 }
 
