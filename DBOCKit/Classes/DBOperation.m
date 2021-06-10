@@ -137,15 +137,6 @@
     return results;
 }
 
-- (NSArray<DBObjectProtocol> *)selectWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls {
-    NSArray<NSDictionary *> *results = [self selectWithSql:sql];
-    if (results.count <= 0) {
-        return nil;
-    }
-    NSArray *resultObjArray = [cls dbocObjArrayWithArrayJsonMap:results];
-    return resultObjArray;
-}
-
 - (NSUInteger)countWithSql:(NSString *)sql {
     if (isAbnormalString(sql)) {
         return 0;
@@ -169,7 +160,7 @@
     if (obj.primaryKeyId <= 0) {
         return [self insertObj:obj];
     }
-    return [self insertOrUpdateObj:obj];
+    return [self udpateObj:obj];
 }
 
 - (NSArray<DBObjectProtocol> *)fecthWithClass:(Class<DBObjectProtocol>)cls {
@@ -177,8 +168,14 @@
     if (isAbnormalString(tableName)) {
         return nil;
     }
+
     NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@", tableName];
-    return [self selectWithSql:sql objClass:cls];
+    NSArray<NSDictionary *> *results = [self selectWithSql:sql];
+    if (results.count <= 0) {
+        return nil;
+    }
+    NSArray *resultObjArray = [cls dbocObjArrayWithArrayJsonMap:results];
+    return resultObjArray;
 }
 
 
@@ -279,6 +276,8 @@
         NSDictionary<NSString *, NSString *> *map = [cls dbocPropertyMap];
         NSMutableSet *propertyNameSet = [NSMutableSet setWithArray:map.allKeys];
         [propertyNameSet minusSet:columnSet];
+        NSSet *ignoreSet = [cls dbocIgnoreFields];
+        [propertyNameSet minusSet:ignoreSet];
         //
         NSSet<NSString *> *sqlSet = [cls dbocAlterTableSqlSetWithFields:propertyNameSet];
         for (NSString *sql in sqlSet) {
