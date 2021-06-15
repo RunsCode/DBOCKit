@@ -46,5 +46,19 @@
     return domains;
 }
 
+//path.lastPathComponent
++ (NSArray *)queryIfHadDBFromDirectory:(NSString *)directory {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSDirectoryEnumerator *directoryEnumerator = [fileManager enumeratorAtPath:directory];
+    NSMutableArray *filePathArray = [NSMutableArray array];
+    NSString *file;
+    while((file = [directoryEnumerator nextObject])) {
+        if([@[@"db"] containsObject:[file pathExtension]]) {
+            [filePathArray addObject:[directory stringByAppendingPathComponent:file]];
+        }
+    }
+    return filePathArray;
+}
+
 
 @end

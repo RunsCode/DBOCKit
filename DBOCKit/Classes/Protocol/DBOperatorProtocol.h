@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)createTableWithObjClass:(Class<DBObjectProtocol>)cls;
 
 ///alter drop
-- (BOOL)executeWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol> _Nullable)cls;
+- (BOOL)executeWithSql:(NSString *)sql;
 
 /// isnert delete update
 ///

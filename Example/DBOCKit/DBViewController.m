@@ -49,7 +49,7 @@
 }
 
 - (IBAction)onTouchShareDB:(id)sender {
-    [self shareWithURL:_databaseURL];
+    [self shareWithURL:self.databaseURL];
 }
 
 - (IBAction)onCreate:(id)sender {
@@ -76,8 +76,16 @@
 //    [self.operator selectWithObjClass:IMMessage.class];
 }
 
+/// ALTER TABLE tName ADD column_name datatype
+/// ALTER TABLE tName DROP COLUMN column_name
+/// ALTER TABLE tName ALTER COLUMN column_name datatype
 - (IBAction)onAlter:(id)sender {
-
+    const char *tName = IMMessage.dbocTableName.UTF8String;
+    NSString *sql = DBSQLChain.alter.table(tName).add("desc text").sql;
+//    NSString *sql = DBSQLChain.alter.table(tName).drop.column.field("dayDate").sql;
+//    NSString *sql =  DBSQLChain.alter.table(tName).alter.column.field("desc").type("varchar(128)").sql;
+    BOOL res = [self.operator executeWithSql:sql];
+    NSLog(@"ALTER succed %@", res ? @"YES"  : @"NO");
 }
 
 - (IBAction)onDrop:(id)sender {
@@ -101,7 +109,7 @@
 - (NSURL *)databaseURL {
     if (_databaseURL) return _databaseURL;
     NSString *path = [DBFile pathWithName:nil directory:nil];
-    _databaseURL = [NSURL URLWithString:path];
+    _databaseURL = [NSURL fileURLWithPath:path isDirectory:NO];
     return _databaseURL;
 }
 
@@ -122,7 +130,7 @@
     m.ignoreInt = 88888;
     m.ignoreString = @"ignoreString";
     m.session = [IMSession new];
-    m.session.sessionId = @"第一条数据";
+    m.session.sessionId = @"data数据更新";
     m.immutableArray = @[@1, @"2"];
     m.immutableSet = [NSSet setWithArray:@[@3, @"4"]];
     m.immutableDictionary = @{ @"q" : @"hjuikol", @"sss": @"456798"};
@@ -141,9 +149,8 @@
     m.targetUser.age = 48;
     m.targetUser.role = 1;
     m.targetUser.sex = 0;
-    m.targetUser.avatar = @"头像url";
-    m.originData = [NSData data];
-    m.dayDate = [NSDate date];
+    m.targetUser.avatar = @"database";
+    m.originData = [NSData dataWithContentsOfURL:self.databaseURL];
 
     IMObject *obj0 = [IMObject new];
     obj0.text = @"IMObject";

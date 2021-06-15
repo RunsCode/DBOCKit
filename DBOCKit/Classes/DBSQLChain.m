@@ -140,6 +140,16 @@ return ^(const char *expression, ...) { \
     return self;
 }
 
+- (DBSQLChain *)drop {
+    MutableMemoryCopyDest(self->_bufferSql, "DROP ", NULL);
+    return self;
+}
+
+- (DBSQLChain *)alter {
+    MutableMemoryCopyDest(self->_bufferSql, "ALTER ", NULL);
+    return self;
+}
+
 - (DBSQLChain * (^)(const char *))add {
     return ^(const char *propertyAndType) {
         if (propertyAndType && 0 < strlen(propertyAndType)) {
@@ -217,7 +227,17 @@ return ^(const char *expression, ...) { \
         if (!fieldName && 0 == strlen(fieldName)) {
             return self;
         }
-        MutableMemoryCopyDest(self->_bufferSql, "`", fieldName, "`", NULL);
+        MutableMemoryCopyDest(self->_bufferSql, "`", fieldName, "` ", NULL);
+        return self;
+    };
+}
+
+- (DBSQLChain * (^)(const char *))type {
+    return ^(const char *typeName) {
+        if (!typeName && 0 == strlen(typeName)) {
+            return self;
+        }
+        MutableMemoryCopyDest(self->_bufferSql, typeName, " ", NULL);
         return self;
     };
 }

@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DBFile : NSObject
 
 + (NSString *)pathWithName:(NSString *_Nullable)fName directory:(NSString *_Nullable)dir;
+//path.lastPathComponent
++ (NSArray *)queryIfHadDBFromDirectory:(NSString *)directory;
 
 @end
 

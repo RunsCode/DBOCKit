@@ -90,7 +90,7 @@
     return res;
 }
 
-- (BOOL)executeWithSql:(NSString *)sql objClass:(Class<DBObjectProtocol>)cls {
+- (BOOL)executeWithSql:(NSString *)sql {
     if (isAbnormalString(sql)) {
         return NO;
     }
@@ -100,7 +100,7 @@
         res = [db executeUpdate:sql withErrorAndBindings:&err];
         if (err) NSLog(@"DBOC Execute Error: %@, sql: %@", err, sql);
     }];
-    return YES;
+    return res;
 }
 
 - (BOOL)updateSql:(NSString *)sql observable:(id<DBObjectProtocol>)obj {

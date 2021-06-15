@@ -128,10 +128,7 @@
         value = [value.class mj_keyValuesArrayWithObjectArray:(NSArray *)value ignoredKeys:ignoreSet.allObjects];
         return [value dbocJsonString];
     }
-    if ([value isKindOfClass:NSDate.class]) {
-        return @(((NSDate *)value).timeIntervalSince1970).stringValue;
-    }
-    if ([value isKindOfClass:NSData.class]) {
+    if ([value isKindOfClass:NSData.class] || [value isKindOfClass:NSDate.class]) {
         return value;
     }
     return [value dbocJsonString];
@@ -289,6 +286,7 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
             if (0 == strlen(buffer)) continue;
             if (0 == strcmp(buffer, "NSString")) continue;
             if (0 == strcmp(buffer, "NSData")) continue;
+            if (0 == strcmp(buffer, "NSDate")) continue;
             //
             NSString *key = [NSString stringWithCString:field encoding:NSUTF8StringEncoding];
             NSString *value = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];

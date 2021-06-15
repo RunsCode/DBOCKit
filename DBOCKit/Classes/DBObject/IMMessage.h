@@ -53,8 +53,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSData *originData;
 
-@property (nonatomic, strong) NSDate *dayDate;
-
 @end
 
 NS_ASSUME_NONNULL_END

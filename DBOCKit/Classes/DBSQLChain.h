@@ -45,10 +45,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DBSQLChain (SubAction)
 
+
 @property (nonatomic, strong, readonly) DBSQLChain *desc;
 @property (nonatomic, strong, readonly) DBSQLChain *column;
 @property (nonatomic, strong, readonly) DBSQLChain *distinct; /// 去重
-
+/// 不好意思 sqlite 暂不支持二级 alter or drop
+@property (nonatomic, strong, readonly) DBSQLChain *alter;
+@property (nonatomic, strong, readonly) DBSQLChain *drop;
+///
 @property (nonatomic, strong, readonly) DBSQLChain *(^add)(const char *propertyAndType);
 @property (nonatomic, strong, readonly) DBSQLChain *(^where)(const char *expression, ...);
 @property (nonatomic, strong, readonly) DBSQLChain *(^set)(const char *expression, ...);
@@ -65,6 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) DBSQLChain *(^table)(const char *tName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^from)(const char *tName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^field)(const char *fieldName);
+@property (nonatomic, strong, readonly) DBSQLChain *(^type)(const char *typeName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^count)(const char *_Nullable fieldName);
 @property (nonatomic, strong, readonly) DBSQLChain *(^orderBy)(const char *fieldName);
 
