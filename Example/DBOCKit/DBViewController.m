@@ -59,6 +59,9 @@
 
 - (IBAction)onCreate:(id)sender {
     [self.operator createTableWithObjClass:IMMessage.class];
+    [self.operator createTableWithObjClass:IMUser.class];
+    [self.operator createTableWithObjClass:IMSession.class];
+    [self.operator createTableWithObjClass:IMObject.class];
 }
 /***
  INSERT INTO t_im_meessage (time, ts, mutableDictionary, imObjs, addType1, immutableSet, dateTime, type, immutableDictionary, immutableArray, date, mutableArray, session, originData, addType2, fromUser, msgId, targetUser, tsObjInt, addType0) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);*/
@@ -96,7 +99,6 @@
     NSArray *res1 = [self.operator selectWithSql:sql];
     NSArray *res = [self.operator fecthWithClass:IMMessage.class];
     NSLog(@"");
-//    [self.operator selectWithObjClass:IMMessage.class];
 }
 
 /// ALTER TABLE tName ADD column_name datatype
@@ -112,7 +114,9 @@
 }
 
 - (IBAction)onDrop:(id)sender {
-
+    NSString *sql = DBSQLChain.drop.table(IMUser.dbocTableName.UTF8String).sql;
+    BOOL res = [self.operator executeWithSql:sql];
+    NSLog(@"DROP succed %@", res ? @"YES"  : @"NO");
 }
 
 - (IBAction)onCount:(id)sender {
