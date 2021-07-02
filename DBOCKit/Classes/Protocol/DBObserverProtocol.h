@@ -17,7 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 @required
 - (NSArray<Class> *)observeObjClassArray;
 
-- (void)updateClass:(Class)cls withObj:(id)obj;
+/// obj change
+- (void)updateClass:(Class)cls withObj:(id<DBObjectProtocol> _Nullable)obj;
+/// table count change
+- (void)updateTable:(NSString *)tName withObj:(id<DBObjectProtocol> _Nullable)obj newTableCount:(NSUInteger)count;
 
 @end
 

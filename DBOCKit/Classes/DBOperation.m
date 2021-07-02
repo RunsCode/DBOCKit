@@ -20,7 +20,7 @@
 
 @property (nonatomic, strong) FMDatabaseQueue *dbQueue;
 
-@property (nonatomic, strong) NSMapTable<Class, NSHashTable<DBObserverProtocol> *> *observerMap;
+@property (nonatomic, strong) NSMapTable<NSString *, NSHashTable<DBObserverProtocol> *> *observerMap;
 
 @end
 
@@ -100,6 +100,9 @@
         res = [db executeUpdate:sql withErrorAndBindings:&err];
         if (err) NSLog(@"DBOC Execute Error: %@, sql: %@", err, sql);
     }];
+    if (res) {
+        [self shouldTriggerObserverWithSql:sql];
+    }
     return res;
 }
 
@@ -114,7 +117,7 @@
         if (err) NSLog(@"DBOC Update Error: %@, sql: %@", err, sql);
     }];
     if (res) {
-        [self fireEventWithObj:obj];
+        [self fireUpdateEventWithTable:obj.class.dbocTableName obj:obj];
     }
     return res;
 }
@@ -154,6 +157,14 @@
     return count;
 }
 
+- (NSInteger)countWithTable:(NSString *)tName {
+    if (!isAbnormalString(tName)) {
+        return -1;
+    }
+    NSString *sql = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@", tName];
+    return [self countWithSql:sql];
+}
+
 #pragma mark -- Convenience methods
 
 - (BOOL)insertOrUpdateObj:(id<DBObjectProtocol>)obj {
@@ -161,6 +172,26 @@
         return [self insertObj:obj];
     }
     return [self udpateObj:obj];
+}
+
+- (BOOL)deleteObj:(id<DBObjectProtocol>)obj {
+    if (!obj) {
+        return NO;
+    }
+    NSString *tName = [obj.class dbocTableName];
+    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKed='%lu'", tName, obj.primaryKeyId];
+    __block BOOL res = NO;
+    [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        NSError *err = nil;
+        res = [db executeUpdate:sql withErrorAndBindings:&err];
+        if (err) {
+            NSLog(@"DBOC DELETE Occured Error. while primaryKeyId: %lu", obj.primaryKeyId);
+        }
+    }];
+    if (obj) {
+        [self fireInsertOrDeleteEventWithTable:tName obj:obj];
+    }
+    return res;
 }
 
 - (NSArray<DBObjectProtocol> *)fecthWithClass:(Class<DBObjectProtocol>)cls {
@@ -188,10 +219,11 @@
     if (arr.count <= 0) return;
     //
     for (Class cls in arr) {
-        NSHashTable *t = [self.observerMap objectForKey:cls];
+        NSString *tName = cls.dbocTableName.uppercaseString;
+        NSHashTable *t = [self.observerMap objectForKey:tName];
         if (!t) {
             t = [NSHashTable weakObjectsHashTable];
-            [self.observerMap setObject:(NSHashTable<DBObserverProtocol> *)t forKey:cls];
+            [self.observerMap setObject:(NSHashTable<DBObserverProtocol> *)t forKey:tName];
         }
         if ([t containsObject:observer]) continue;
         //
@@ -206,12 +238,13 @@
     if (arr.count <= 0) return;
     //
     for (Class cls in arr) {
-        NSHashTable *t = [self.observerMap objectForKey:cls];
+        NSString *tName = cls.dbocTableName.uppercaseString;
+        NSHashTable *t = [self.observerMap objectForKey:tName];
         if (!t) continue;
         //
         [t removeObject:observer];
         if (t.count <= 0) {
-            [self.observerMap removeObjectForKey:cls];
+            [self.observerMap removeObjectForKey:tName];
         }
     }
 }
@@ -234,6 +267,9 @@
         }
         obj.primaryKeyId = db.lastInsertRowId;
     }];
+    if (res) {
+        [self fireInsertOrDeleteEventWithTable:obj.class.dbocTableName obj:obj];
+    }
     return res;
 }
 
@@ -252,7 +288,7 @@
         }
     }];
     if (res) {
-        [self fireEventWithObj:obj];
+        [self fireUpdateEventWithTable:obj.class.dbocTableName obj:obj];
     }
     return res;
 }
@@ -291,19 +327,53 @@
     return res;
 }
 
-- (void)fireEventWithObj:(id)obj {
-    Class cls = [obj class];
-    if (!cls) return;
-    //
-    NSHashTable *t = [self.observerMap objectForKey:cls];
+- (void)shouldTriggerObserverWithSql:(NSString *)sql {
+    if (isAbnormalString(sql)) {
+        return;
+    }
+    sql = [sql uppercaseString];
+    NSArray<NSString *> *tNameArr = [sql componentsSeparatedByString:@" "];
+    if ([sql containsString:@"UPDATE"]) {
+        if (tNameArr.count > 2) {
+            NSString *tName = tNameArr[1];
+            [self fireUpdateEventWithTable:tName obj:nil];
+        }
+        return;
+    }
+    if ([sql containsString:@"INSERT"] || [sql containsString:@"DELETE"]) {
+        if (tNameArr.count > 3) {
+            NSString *tName = tNameArr[2];
+            [self fireInsertOrDeleteEventWithTable:tName obj:nil];
+        }
+    }
+}
+
+- (void)fireUpdateEventWithTable:(NSString *)tName obj:(id<DBObjectProtocol> _Nullable)obj {
+    if (isAbnormalString(tName)) {
+        return;
+    }
+    tName = [tName uppercaseString];
+    NSHashTable *t = [self.observerMap objectForKey:tName];
     for (id<DBObserverProtocol> observer in t) {
-        [observer updateClass:cls withObj:obj];
+        [observer updateClass:obj.class withObj:obj];
+    }
+}
+
+- (void)fireInsertOrDeleteEventWithTable:(NSString *)tName obj:(id<DBObjectProtocol> _Nullable)obj {
+    if (isAbnormalString(tName)) {
+        return;
+    }
+    tName = [tName uppercaseString];
+    NSUInteger count = [self countWithTable:tName];
+    NSHashTable *t = [self.observerMap objectForKey:tName];
+    for (id<DBObserverProtocol> observer in t) {
+        [observer updateTable:tName withObj:obj newTableCount:count];
     }
 }
 
 #pragma mark -- getter
 
-- (NSMapTable<Class, NSHashTable<DBObserverProtocol> *> *)observerMap {
+- (NSMapTable<NSString *, NSHashTable<DBObserverProtocol> *> *)observerMap {
     if (_observerMap) return _observerMap;
     //
     _observerMap = [NSMapTable weakToWeakObjectsMapTable];

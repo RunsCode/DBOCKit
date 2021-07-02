@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)existsTableWithName:(NSString *)name;
 - (BOOL)createTableWithObjClass:(Class<DBObjectProtocol>)cls;
 
-///alter drop
+/// alter drop
 - (BOOL)executeWithSql:(NSString *)sql;
 
 /// isnert delete update
@@ -39,9 +39,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// count
 - (NSUInteger)countWithSql:(NSString *)sql;
+/// -1 : some error 
+- (NSInteger)countWithTable:(NSString *)tName;
 
 /// convenience methods
 - (BOOL)insertOrUpdateObj:(id<DBObjectProtocol>)obj;
+- (BOOL)deleteObj:(id<DBObjectProtocol>)obj;
 - (NSArray<DBObjectProtocol> * _Nullable)fecthWithClass:(Class<DBObjectProtocol>)cls;
 
 /// observer
