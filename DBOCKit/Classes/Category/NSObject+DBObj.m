@@ -200,7 +200,7 @@
     char primaryKeyId[64] = {0};
     sprintf(primaryKeyId, "%lu;", (unsigned long)self.primaryKeyId);
     const char *keySql = [propertySet.allObjects componentsJoinedByString:@"=?, "].UTF8String;
-    MutableMemoryCopyDest(buffer, "UPDATE ", tName.UTF8String, " SET " , keySql, "=?, WHERE primaryKeyId=", primaryKeyId, NULL);
+    MutableMemoryCopyDest(buffer, "UPDATE ", tName.UTF8String, " SET " , keySql, "=? WHERE primaryKeyId=", primaryKeyId, NULL);
     NSString *sql = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
     //
     return [DBSqlObject objWithSql:sql values:valueArray];;

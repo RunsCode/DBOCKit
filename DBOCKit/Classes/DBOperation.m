@@ -117,7 +117,12 @@
         if (err) NSLog(@"DBOC Update Error: %@, sql: %@", err, sql);
     }];
     if (res) {
-        [self fireUpdateEventWithTable:obj.class.dbocTableName obj:obj];
+        sql = sql.uppercaseString;
+        if ([sql containsString:@"UPDATE"]) {
+            [self fireUpdateEventWithTable:obj.class.dbocTableName obj:obj];
+        } else {
+            [self fireInsertOrDeleteEventWithTable:obj.class.dbocTableName obj:obj];
+        }
     }
     return res;
 }

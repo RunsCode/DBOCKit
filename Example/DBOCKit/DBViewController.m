@@ -69,20 +69,26 @@
 }
 
 - (IBAction)onDelete:(id)sender {
-//    NSArray *res = [self.operator fecthWithClass:IMMessage.class];
+    NSArray *res = [self.operator fecthWithClass:IMMessage.class];
 //    [self.operator deleteObj:res.lastObject];
 
     NSString *tName = [IMMessage.class dbocTableName];
-    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='2'", tName];
-    [self.operator executeWithSql:sql];
+    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='4'", tName];
+    [self.operator updateSql:sql observable:res.lastObject];
+//    [self.operator executeWithSql:sql];
 }
 
 - (IBAction)onUpdate:(id)sender {
     NSArray<IMMessage *> *res = [self.operator fecthWithClass:IMMessage.class];
-    res.lastObject.ts = 100086;
-    res.lastObject.addType0 = 10010;
-    res.lastObject.msgId = @"不知道些什么好";
-    [self.operator insertOrUpdateObj:res.lastObject];
+    IMMessage *m = res.lastObject;
+//    m.ts = 100086;
+//    m.addType0 = 10010;
+//    m.msgId = @"不知道些什么好";
+//    [self.operator insertOrUpdateObj:m];
+    NSString *sql = @"UPDATE t_im_meessage SET time=2222222, ts=7777777, addType0=88888888 WHERE primaryKeyId=1;";
+    [self.operator updateSql:sql observable:m];
+//    - (BOOL)updateSql:(NSString *)sql observable:(id<DBObjectProtocol>)obj;
+
 }
 
 - (IBAction)onSelect:(id)sender {
