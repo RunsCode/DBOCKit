@@ -157,7 +157,7 @@
     return count;
 }
 
-- (NSUInteger)countWithTable:(NSString *)tName {
+- (NSUInteger)countOfTable:(NSString *)tName {
     if (isAbnormalString(tName)) {
         return 0;
     }
@@ -364,7 +364,7 @@
         return;
     }
     tName = [tName uppercaseString];
-    NSUInteger count = [self countWithTable:tName];
+    NSUInteger count = [self countOfTable:tName];
     NSHashTable *t = [self.observerMap objectForKey:tName];
     for (id<DBObserverProtocol> observer in t) {
         [observer updateTable:tName withObj:obj newTableCount:count];

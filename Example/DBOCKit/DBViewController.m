@@ -69,12 +69,20 @@
 }
 
 - (IBAction)onDelete:(id)sender {
-    NSArray *res = [self.operator fecthWithClass:IMMessage.class];
-    [self.operator deleteObj:res.lastObject];
+//    NSArray *res = [self.operator fecthWithClass:IMMessage.class];
+//    [self.operator deleteObj:res.lastObject];
+
+    NSString *tName = [IMMessage.class dbocTableName];
+    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='2'", tName];
+    [self.operator executeWithSql:sql];
 }
 
 - (IBAction)onUpdate:(id)sender {
-
+    NSArray<IMMessage *> *res = [self.operator fecthWithClass:IMMessage.class];
+    res.lastObject.ts = 100086;
+    res.lastObject.addType0 = 10010;
+    res.lastObject.msgId = @"不知道些什么好";
+    [self.operator insertOrUpdateObj:res.lastObject];
 }
 
 - (IBAction)onSelect:(id)sender {

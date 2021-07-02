@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// count
 - (NSUInteger)countWithSql:(NSString *)sql;
-- (NSUInteger)countWithTable:(NSString *)tName;
+- (NSUInteger)countOfTable:(NSString *)tName;
 
 /// convenience methods
 - (BOOL)insertOrUpdateObj:(id<DBObjectProtocol>)obj;
