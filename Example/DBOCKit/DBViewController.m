@@ -67,33 +67,36 @@
  INSERT INTO t_im_meessage (time, ts, mutableDictionary, imObjs, addType1, immutableSet, dateTime, type, immutableDictionary, immutableArray, date, mutableArray, session, originData, addType2, fromUser, msgId, targetUser, tsObjInt, addType0) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);*/
 - (IBAction)onInsert:(id)sender {
 //    [self.operator insertOrUpdateObj:[self fetchMessage]];
-    NSString *sql = [NSString stringWithFormat:@"INSERT INTO t_im_meessage (time, ts) VALUES (3.141692654, 9876543210);"];
-    [self.operator executeWithSql:sql];
+//    NSString *sql = [NSString stringWithFormat:@"INSERT INTO t_im_meessage (time, ts) VALUES (3.141692654, 9876543210);"];
+//    [self.operator executeWithSql:sql];
 
-//    NSArray *arr = [];
+    NSArray *arr = @[self.fetchMessage, self.fetchMessage, self.fetchMessage];
+    [self.operator insertOrUpdateObjs:arr];
 }
 
 - (IBAction)onDelete:(id)sender {
     NSArray *res = [self.operator fecthWithClass:IMMessage.class];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:res];
+    NSArray *arr = [array subarrayWithRange:(NSRange){0, 5}];
+    [self.operator deleteObjs:arr];
 //    [self.operator deleteObj:res.lastObject];
 
-    NSString *tName = [IMMessage.class dbocTableName];
-    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='4'", tName];
-    [self.operator updateSql:sql observable:res.lastObject];
+//    NSString *tName = [IMMessage.class dbocTableName];
+//    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='4'", tName];
+//    [self.operator updateSql:sql observable:res.lastObject];
 //    [self.operator executeWithSql:sql];
 }
 
 - (IBAction)onUpdate:(id)sender {
     NSArray<IMMessage *> *res = [self.operator fecthWithClass:IMMessage.class];
-    IMMessage *m = res.lastObject;
+    [self.operator insertOrUpdateObjs:res];
+
 //    m.ts = 100086;
 //    m.addType0 = 10010;
 //    m.msgId = @"不知道些什么好";
 //    [self.operator insertOrUpdateObj:m];
-    NSString *sql = @"UPDATE t_im_meessage SET time=2222222, ts=7777777, addType0=88888888 WHERE primaryKeyId=1;";
-    [self.operator updateSql:sql observable:m];
-//    - (BOOL)updateSql:(NSString *)sql observable:(id<DBObjectProtocol>)obj;
-
+//    NSString *sql = @"UPDATE t_im_meessage SET time=2222222, ts=7777777, addType0=88888888 WHERE primaryKeyId=1;";
+//    [self.operator updateSql:sql observable:m];
 }
 
 - (IBAction)onSelect:(id)sender {
@@ -153,10 +156,10 @@
 - (IMMessage *)fetchMessage {
     IMMessage *m = [IMMessage new];
     m.time = 214654564.1234;
-    m.dateTime = 4546.236;
+    m.dateTime = NSDate.date.timeIntervalSince1970;
     m.date = 369.321;
     m.tsObjInt = -23465;
-    m.ts = 23465;
+    m.ts = (NSUInteger)NSDate.date.timeIntervalSince1970;
     m.ignoreInt = 88888;
     m.ignoreString = @"ignoreString";
     m.session = [IMSession new];

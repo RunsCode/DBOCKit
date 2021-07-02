@@ -264,20 +264,6 @@ static NSMutableDictionary<Class, NSDictionary<NSString *, NSString *> *> *st_pr
     if (st_propertyMaps.count > 0) {
         return st_propertyMaps;
     }
-//    unsigned int countOfProperty = 0;
-//    objc_property_t *propertyPtr = class_copyPropertyList(self.class, &countOfProperty);
-//    NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:countOfProperty];
-//    for (int i = 0; i < countOfProperty; i++) {
-//        objc_property_t property = propertyPtr[i];
-//        const char *field = property_getName(property);
-//        NSString *ocField = [NSString stringWithCString:field encoding:NSUTF8StringEncoding];
-//        const char *type = property_getAttributes(property);
-//        const char *dbType = [self dboc_dbTypeWithPropertyType:type];
-//        NSString *ocDBType = [NSString stringWithCString:dbType encoding:NSUTF8StringEncoding];
-//        if (ocField.length > 0 && ocDBType.length > 0) {
-//            map[ocField] = ocDBType;
-//        }
-//    }
     st_propertyMaps = [NSMutableDictionary dictionaryWithCapacity:4];
     return st_propertyMaps;
 }
