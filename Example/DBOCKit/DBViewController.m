@@ -60,9 +60,12 @@
 - (IBAction)onCreate:(id)sender {
     [self.operator createTableWithObjClass:IMMessage.class];
 }
-
+/***
+ INSERT INTO t_im_meessage (time, ts, mutableDictionary, imObjs, addType1, immutableSet, dateTime, type, immutableDictionary, immutableArray, date, mutableArray, session, originData, addType2, fromUser, msgId, targetUser, tsObjInt, addType0) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);*/
 - (IBAction)onInsert:(id)sender {
-    [self.operator insertOrUpdateObj:[self fetchMessage]];
+//    [self.operator insertOrUpdateObj:[self fetchMessage]];
+    NSString *sql = [NSString stringWithFormat:@"INSERT INTO t_im_meessage (time, ts) VALUES (3.141692654, 9876543210);"];
+    [self.operator executeWithSql:sql];
 }
 
 - (IBAction)onDelete:(id)sender {
