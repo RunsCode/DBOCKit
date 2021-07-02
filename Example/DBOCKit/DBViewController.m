@@ -69,7 +69,8 @@
 }
 
 - (IBAction)onDelete:(id)sender {
-    
+    NSArray *res = [self.operator fecthWithClass:IMMessage.class];
+    [self.operator deleteObj:res.lastObject];
 }
 
 - (IBAction)onUpdate:(id)sender {

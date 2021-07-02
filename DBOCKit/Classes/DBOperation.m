@@ -179,7 +179,7 @@
         return NO;
     }
     NSString *tName = [obj.class dbocTableName];
-    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKed='%lu'", tName, obj.primaryKeyId];
+    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='%lu'", tName, obj.primaryKeyId];
     __block BOOL res = NO;
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
         NSError *err = nil;
@@ -188,7 +188,7 @@
             NSLog(@"DBOC DELETE Occured Error. while primaryKeyId: %lu", obj.primaryKeyId);
         }
     }];
-    if (obj) {
+    if (res) {
         [self fireInsertOrDeleteEventWithTable:tName obj:obj];
     }
     return res;
