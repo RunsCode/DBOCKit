@@ -18,8 +18,9 @@
 #import <DBOCKit/IMSession.h>
 #import <DBOCKit/IMUser.h>
 #import <DBOCKit/IMObject.h>
+#import <DBOCKit/DBObserverProtocol.h>
 
-@interface DBViewController ()
+@interface DBViewController ()<DBObserverProtocol>
 
 @property (nonatomic, strong) NSURL *databaseURL;
 
@@ -32,20 +33,24 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+}
 
-//    NSString *sql = [IMMessage dbocDefaultCreateTableSql];
-//    NSLog(@"%@", sql);
-//    //
-//    IMMessage *message = [IMMessage new];
-//    @try {
-//        [message dbocNonBasicValueTypeClassMap];
-//    } @catch (NSException *exception) {
-//        NSLog(@"%@", exception);
-//    } @finally {
-//
-////    }
-//    NSDictionary *map = [message dbocNonBasicValueTypeClassMap];
-//    NSLog(@"%@", map);
+
+- (NSArray<Class> *)observeObjClassArray {
+    return @[
+        IMMessage.class,
+        IMSession.class,
+        IMObject.class,
+        IMUser.class,
+    ];
+}
+- (void)updateClass:(Class)cls withObj:(id<DBObjectProtocol>)obj {
+    NSString *tName = [cls dbocTableName];
+    NSLog(@"OCDB:VC  updateClass table: %@, obj: %@", tName, obj);
+}
+
+- (void)updateTable:(NSString *)tName withObj:(id<DBObjectProtocol>)obj newTableCount:(NSUInteger)count {
+    NSLog(@"OCDB:VC  updateTable table: %@, count: %lu, obj: %@", tName, (unsigned long)count, obj);
 }
 
 - (IBAction)onTouchShareDB:(id)sender {
@@ -117,6 +122,7 @@
     if (_operator) return _operator;
     //
     _operator = [[DBOperation alloc] initWithDBURL:self.databaseURL];
+    [_operator addObserver:self];
     return _operator;
 }
 

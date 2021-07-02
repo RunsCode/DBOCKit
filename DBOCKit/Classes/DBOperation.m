@@ -157,9 +157,9 @@
     return count;
 }
 
-- (NSInteger)countWithTable:(NSString *)tName {
-    if (!isAbnormalString(tName)) {
-        return -1;
+- (NSUInteger)countWithTable:(NSString *)tName {
+    if (isAbnormalString(tName)) {
+        return 0;
     }
     NSString *sql = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@", tName];
     return [self countWithSql:sql];
@@ -376,7 +376,7 @@
 - (NSMapTable<NSString *, NSHashTable<DBObserverProtocol> *> *)observerMap {
     if (_observerMap) return _observerMap;
     //
-    _observerMap = [NSMapTable weakToWeakObjectsMapTable];
+    _observerMap = [NSMapTable strongToStrongObjectsMapTable];
     return _observerMap;
 }
 
