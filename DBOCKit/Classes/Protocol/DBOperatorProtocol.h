@@ -46,6 +46,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)deleteObj:(id<DBObjectProtocol>)obj;
 - (NSArray<DBObjectProtocol> * _Nullable)fecthWithClass:(Class<DBObjectProtocol>)cls;
 
+/// batch behavior
+- (BOOL)insertOrUpdateObjs:(NSArray<DBObjectProtocol> *)objs;
+- (BOOL)deleteObjs:(NSArray<DBObjectProtocol> *)objs;
+
 /// observer
 - (void)addObserver:(id<DBObserverProtocol>)observer;
 - (void)removeObserver:(id<DBObserverProtocol>)observer;

@@ -61,7 +61,7 @@
     [self.operator createTableWithObjClass:IMMessage.class];
     [self.operator createTableWithObjClass:IMUser.class];
     [self.operator createTableWithObjClass:IMSession.class];
-    [self.operator createTableWithObjClass:IMObject.class];
+//    [self.operator createTableWithObjClass:IMObject.class];
 }
 /***
  INSERT INTO t_im_meessage (time, ts, mutableDictionary, imObjs, addType1, immutableSet, dateTime, type, immutableDictionary, immutableArray, date, mutableArray, session, originData, addType2, fromUser, msgId, targetUser, tsObjInt, addType0) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);*/
@@ -69,6 +69,8 @@
 //    [self.operator insertOrUpdateObj:[self fetchMessage]];
     NSString *sql = [NSString stringWithFormat:@"INSERT INTO t_im_meessage (time, ts) VALUES (3.141692654, 9876543210);"];
     [self.operator executeWithSql:sql];
+
+//    NSArray *arr = [];
 }
 
 - (IBAction)onDelete:(id)sender {
@@ -114,7 +116,7 @@
 }
 
 - (IBAction)onDrop:(id)sender {
-    NSString *sql = DBSQLChain.drop.table(IMUser.dbocTableName.UTF8String).sql;
+    NSString *sql = DBSQLChain.drop.table(IMSession.dbocTableName.UTF8String).sql;
     BOOL res = [self.operator executeWithSql:sql];
     NSLog(@"DROP succed %@", res ? @"YES"  : @"NO");
 }

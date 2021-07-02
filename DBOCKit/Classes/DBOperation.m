@@ -214,6 +214,31 @@
     return resultObjArray;
 }
 
+- (BOOL)insertOrUpdateObjs:(NSArray<DBObjectProtocol> *)objs {
+    if (objs.count <= 0) {
+        return NO;
+    }
+    for (id obj in objs) {
+        BOOL res = [self insertOrUpdateObj:obj];
+        if (!res) {
+            return res;
+        }
+    }
+    return YES;
+}
+
+- (BOOL)deleteObjs:(NSArray<DBObjectProtocol> *)objs {
+    if (objs.count <= 0) {
+        return NO;
+    }
+    for (id obj in objs) {
+        BOOL res = [self deleteObj:obj];
+        if (!res) {
+            return res;
+        }
+    }
+    return YES;
+}
 
 #pragma mark -- observer
 

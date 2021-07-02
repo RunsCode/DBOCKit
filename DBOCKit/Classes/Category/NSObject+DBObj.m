@@ -76,7 +76,7 @@
     NSMutableSet *set = [NSMutableSet setWithCapacity:fields.count];
     for (NSString *field in fields) {
         char buffer[1024] = {0};
-        const char *ocDBType = st_propertyMap[field].UTF8String;
+        const char *ocDBType = self.dbocPropertyMap[field].UTF8String;
         MutableMemoryCopyDest(buffer, prefix, tName, " ", addColumnSql, field.UTF8String, " ", ocDBType, ";", NULL);
         NSString *res = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
         if (isAbnormalString(res)) continue;
@@ -234,14 +234,14 @@
 }
 
 #pragma mark -- setter & getter
-//// [field:dbtype]
-static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
+
 + (NSDictionary<NSString *, NSString *> *)dbocPropertyMap {
-    if (st_propertyMap.count > 0) {
-        return st_propertyMap;
+    NSDictionary *res = [self.dbocPropertyCollection objectForKey:self];
+    if (res.count > 0) {
+        return res;
     }
     unsigned int countOfProperty = 0;
-    objc_property_t *propertyPtr = class_copyPropertyList(self.class, &countOfProperty);
+    objc_property_t *propertyPtr = class_copyPropertyList(self, &countOfProperty);
     NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:countOfProperty];
     for (int i = 0; i < countOfProperty; i++) {
         objc_property_t property = propertyPtr[i];
@@ -254,8 +254,32 @@ static NSDictionary<NSString *, NSString *> *st_propertyMap = nil;
             map[ocField] = ocDBType;
         }
     }
-    st_propertyMap = [map copy];
-    return st_propertyMap;
+    [st_propertyMaps setObject:map.copy forKey:(Class)self];
+    return map.copy;
+}
+
+//// [class:[filed:type]]
+static NSMutableDictionary<Class, NSDictionary<NSString *, NSString *> *> *st_propertyMaps = nil;
++ (NSDictionary<Class, NSDictionary<NSString *, NSString *> *> *)dbocPropertyCollection {
+    if (st_propertyMaps.count > 0) {
+        return st_propertyMaps;
+    }
+//    unsigned int countOfProperty = 0;
+//    objc_property_t *propertyPtr = class_copyPropertyList(self.class, &countOfProperty);
+//    NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:countOfProperty];
+//    for (int i = 0; i < countOfProperty; i++) {
+//        objc_property_t property = propertyPtr[i];
+//        const char *field = property_getName(property);
+//        NSString *ocField = [NSString stringWithCString:field encoding:NSUTF8StringEncoding];
+//        const char *type = property_getAttributes(property);
+//        const char *dbType = [self dboc_dbTypeWithPropertyType:type];
+//        NSString *ocDBType = [NSString stringWithCString:dbType encoding:NSUTF8StringEncoding];
+//        if (ocField.length > 0 && ocDBType.length > 0) {
+//            map[ocField] = ocDBType;
+//        }
+//    }
+    st_propertyMaps = [NSMutableDictionary dictionaryWithCapacity:4];
+    return st_propertyMaps;
 }
 
 + (NSString *)dbocTableName {
