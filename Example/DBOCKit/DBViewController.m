@@ -77,8 +77,8 @@
 }
 
 /// ALTER TABLE tName ADD column_name datatype
-/// ALTER TABLE tName DROP COLUMN column_name
-/// ALTER TABLE tName ALTER COLUMN column_name datatype
+/// ALTER TABLE tName DROP COLUMN column_name 不支持
+/// ALTER TABLE tName ALTER COLUMN column_name datatype 不支持
 - (IBAction)onAlter:(id)sender {
     const char *tName = IMMessage.dbocTableName.UTF8String;
     NSString *sql = DBSQLChain.alter.table(tName).add("desc text").sql;

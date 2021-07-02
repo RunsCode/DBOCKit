@@ -53,6 +53,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSData *originData;
 
+@property (nonatomic, assign) NSUInteger addType0;
+
+@property (nonatomic, copy) NSString *addType1;
+
+@property (nonatomic, strong) IMSession *addType2;
+
 @end
 
 NS_ASSUME_NONNULL_END

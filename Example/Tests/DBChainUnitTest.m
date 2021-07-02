@@ -26,7 +26,15 @@
 
 - (void)testExample {
     // int(*p)(int, int)
-
+//    const char *prefix = "ALTER TABLE ";
+//    const char *addColumnSql = "ADD COLUMN ";
+//    const char *tName = "t_im_message";
+//
+//    const char *field = "addType0"
+//    char buffer[1024] = {0};
+//    NSString *ocDBType = "INTEGER";
+//    MutableMemoryCopyDest(buffer, prefix, tName, " ", addColumnSql, field, " ", ocDBType, ";",NULL);
+//    NSString *res = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
 }
 
 - (void)testCreate {

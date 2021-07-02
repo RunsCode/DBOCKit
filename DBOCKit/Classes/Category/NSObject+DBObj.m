@@ -76,8 +76,8 @@
     NSMutableSet *set = [NSMutableSet setWithCapacity:fields.count];
     for (NSString *field in fields) {
         char buffer[1024] = {0};
-        NSString *ocDBType = st_propertyMap[field];
-        MutableMemoryCopyDest(buffer, prefix, tName, " ", addColumnSql, field, " ", ocDBType, ";",NULL);
+        const char *ocDBType = st_propertyMap[field].UTF8String;
+        MutableMemoryCopyDest(buffer, prefix, tName, " ", addColumnSql, field.UTF8String, " ", ocDBType, ";", NULL);
         NSString *res = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
         if (isAbnormalString(res)) continue;
         [set addObject:res];
