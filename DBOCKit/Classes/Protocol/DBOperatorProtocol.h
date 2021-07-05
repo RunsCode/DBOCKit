@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// select
 - (NSArray<NSDictionary<NSString *, id> *> * _Nullable)selectWithSql:(NSString *)sql;
+- (NSArray<DBObjectProtocol> *)selectObjClass:(Class)cls withSql:(NSString *)sql;
 
 /// count
 - (NSUInteger)countWithSql:(NSString *)sql;

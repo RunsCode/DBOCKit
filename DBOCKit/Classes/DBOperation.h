@@ -21,7 +21,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DBOperation : NSObject<DBOperatorProtocol>
+@interface DBOperation : NSObject <DBOperatorProtocol>
 
 - (instancetype)init __attribute__((unavailable("use protocol `DBOperatorProtocol` init method instead")));
 + (instancetype)new __attribute__((unavailable("use protocol `DBOperatorProtocol` init method instead")));

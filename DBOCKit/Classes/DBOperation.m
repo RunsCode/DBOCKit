@@ -145,6 +145,15 @@
     return results;
 }
 
+- (NSArray<DBObjectProtocol> *)selectObjClass:(Class)cls withSql:(NSString *)sql {
+    NSArray<NSDictionary *> *results = [self selectWithSql:sql];
+    if (results.count <= 0) {
+        return nil;
+    }
+    NSArray *resultObjArray = [cls dbocObjArrayWithArrayJsonMap:results];
+    return resultObjArray;
+}
+
 - (NSUInteger)countWithSql:(NSString *)sql {
     if (isAbnormalString(sql)) {
         return 0;
