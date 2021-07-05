@@ -7,8 +7,7 @@
 //
 
 #import "DBSQLChain.h"
-#include <string.h>
-#include "string_common.h"
+#include "DBOCCString.h"
 
 int const kDBOCMaxSQLBufferLength = 1024;
 char const * const kDBOCSQLACtionCREATE = "CREATE ";

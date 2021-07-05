@@ -4,15 +4,16 @@
 //
 //  Created by WangYajun on 2021/6/4.
 //
-
-#include "string_common.h"
+#include <stdlib.h>
 #import <objc/runtime.h>
 #import <MJExtension/MJExtension.h>
+
+#import "DBOCKit.h"
+#include "DBOCCString.h"
 #import "NSObject+DBObj.h"
-#import "NSString+Tool.h"
+#import "NSString+DBOCCTool.h"
 #import "DBObjectProtocol.h"
 #import "DBSqlObject.h"
-#include "stdlib.h"
 
 //@interface NSObject ()//<DBObjectProtocol>
 //

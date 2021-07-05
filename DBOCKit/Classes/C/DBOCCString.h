@@ -5,8 +5,8 @@
 //  Created by WangYajun on 2021/4/27.
 //
 
-#ifndef string_common_h
-#define string_common_h
+#ifndef dboc_c_string_h
+#define dboc_c_string_h
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -42,11 +42,10 @@ void MutableMemoryCopyDest(char *dest, const char *first, ...);
 /// @param fmt fmt description
 int StringFormat(char *dest, const char *fmt, ...);
 
-
 /// 字符串格式化
 /// @param dest dest description
 /// @param fmt fmt description
 /// @param ap ap description
 int StringVSNPrintf(char *dest, const char *fmt, va_list ap);
 
-#endif /* string_common_h */
+#endif /* dboc_c_string_h */

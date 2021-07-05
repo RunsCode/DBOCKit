@@ -8,16 +8,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#import <DBOCKit/string_common.h>
-#import <DBOCKit/DBSQLChain.h>
-#import <DBOCKit/IMMessage.h>
-#import <DBOCKit/IMSession.h>
-#import <DBOCKit/NSObject+DBObj.h>
-#import <DBOCKit/IMObject.h>
-#import <DBOCKit/DBObjectProtocol.h>
-#import <DBOCKit/IMUser.h>
-#import <DBOCKit/IMObject.h>
-#import <DBOCKit/DBSqlObject.h>
+//#import <DBOCKit/string_common.h>
+//#import <DBOCKit/DBSQLChain.h>
+//#import <DBOCKit/NSObject+DBObj.h>
+//#import <DBOCKit/DBObjectProtocol.h>
+//#import <DBOCKit/DBSqlObject.h>
+//#import "IMObject.h"
+//#import "IMMessage.h"
+//#import "IMSession.h"
+//#import "IMUser.h"
 
 @import XCTest;
 
@@ -69,7 +68,7 @@ const size_t MAX_BUFFER_SIZE = 128;
 //    NSArray *res = [NSArray.new arrayByApplyingDifference:coll];
 //    NSLog(@"");
 }
-
+/*
 - (IMMessage *)ferchMessage {
     IMMessage *m = [IMMessage new];
     m.time = 214654564.1234;
@@ -113,7 +112,6 @@ const size_t MAX_BUFFER_SIZE = 128;
     m.primaryKeyId = 10086;
     return m;
 }
-
 - (void)testInsertSql {
     IMMessage *m = [self ferchMessage];
     DBSqlObject *obj = [m dbocInsertSqlObj];
@@ -149,7 +147,6 @@ const size_t MAX_BUFFER_SIZE = 128;
     NSString *sql = [IMMessage dbocDefaultCreateTableSql];
     NSLog(@"%@", sql);
 }
-
 - (void)testCategoryExt {
     IMObject *obj = [IMObject new];
     [(id<DBObjectProtocol>)obj dbocInsertSqlObj];
@@ -160,7 +157,6 @@ const size_t MAX_BUFFER_SIZE = 128;
     NSString *sql = [IMMessage dbocDefaultCreateTableSql];
 //    self.dbocPropertyMap
 }
-
 
 - (void)testFormat {
 
@@ -244,5 +240,6 @@ int stringFormatTest(char *dest, const char *fmt, ...) {
     printf("a = %s, b = %s, c = %s \n", a, b , c);
 }
 
-@end
 
+ */
+@end

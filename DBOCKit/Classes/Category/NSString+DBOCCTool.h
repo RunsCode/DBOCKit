@@ -1,5 +1,5 @@
 //
-//  NSString+Tool.h
+//  NSString+DBOCCTool.h
 //  DBOCKit
 //
 //  Created by WangYajun on 2021/6/9.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSString (Tool)
+@interface NSString (DBOCCTool)
 
 @end
 

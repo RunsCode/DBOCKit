@@ -7,17 +7,17 @@
 //
 
 #import "DBViewController.h"
-#import <DBOCKit/string_common.h>
+#import "IMSession.h"
+#import "IMUser.h"
+#import "IMObject.h"
+#import "IMMessage.h"
+#import <DBOCKit/DBOCCString.h>
 #import <DBOCKit/DBSQLChain.h>
 #import <DBOCKit/DBFile.h>
-#import <DBOCKit/IMMessage.h>
 #import <DBOCKit/NSObject+DBObj.h>
 #import <DBOCKit/DBOperatorProtocol.h>
 #import <DBOCKit/DBObjectProtocol.h>
 #import <DBOCKit/DBOperation.h>
-#import <DBOCKit/IMSession.h>
-#import <DBOCKit/IMUser.h>
-#import <DBOCKit/IMObject.h>
 #import <DBOCKit/DBObserverProtocol.h>
 
 @interface DBViewController ()<DBObserverProtocol>
@@ -103,7 +103,7 @@
     NSString *sql = DBSQLChain.select.asterisk.from(IMMessage.dbocTableName.UTF8String).sql;
     NSArray *res1 = [self.operator selectWithSql:sql];
     NSArray *res = [self.operator fecthWithClass:IMMessage.class];
-    NSLog(@"");
+    NSLog(@"onSelect Over");
 }
 
 /// ALTER TABLE tName ADD column_name datatype

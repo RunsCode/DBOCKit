@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'DBOCKit'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of DBOCKit.'
+  s.summary          = 'A DB SQL Chain.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,14 +18,14 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+  A DB SQL Chain
                        DESC
 
-  s.homepage         = 'https://github.com/wyf705064/DBOCKit'
+  s.homepage         = 'https://github.com/RunsCode/DBOCKit'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'wyf705064' => 'wangyajun05822@hellobike.com' }
-  s.source           = { :git => 'https://github.com/wyf705064/DBOCKit.git', :tag => s.version.to_s }
+  s.author           = { 'RunsCode' => 'runs.wang.dev@gmail.com' }
+  s.source           = { :git => 'https://github.com/RunsCode/DBOCKit.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'

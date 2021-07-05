@@ -5,7 +5,7 @@
 //  Created by WangYajun on 2021/4/26.
 //  Copyright © 2021 王亚军. All rights reserved.
 //
-
+#import "DBOCKit.h"
 #import <fmdb/FMDB.h>
 #import "DBFile.h"
 #import "DBOperation.h"
@@ -13,7 +13,7 @@
 #import "DBObserverProtocol.h"
 #import "DBObjectProtocol.h"
 #import "NSObject+DBObj.h"
-#import "NSString+Tool.h"
+#import "NSString+DBOCCTool.h"
 #import "DBSqlObject.h"
 
 @interface DBOperation () <DBOperatorProtocol>

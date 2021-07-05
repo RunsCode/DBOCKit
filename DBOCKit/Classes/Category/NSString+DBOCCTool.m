@@ -1,13 +1,13 @@
 //
-//  NSString+Tool.m
+//  NSString+DBOCCTool.m
 //  DBOCKit
 //
 //  Created by WangYajun on 2021/6/9.
 //
 
-#import "NSString+Tool.h"
+#import "NSString+DBOCCTool.h"
 
-@implementation NSString (Tool)
+@implementation NSString (DBOCCTool)
 
 @end
 
