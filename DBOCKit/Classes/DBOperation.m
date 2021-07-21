@@ -304,7 +304,7 @@
             NSLog(@"DBOC INSERT Failed, sql: %@, error: %@", sqlObj.sql, err);
             return;
         }
-        obj.dbocPrimaryKeyId = db.lastInsertRowId;
+        obj.dbocPrimaryKeyId = (NSUInteger)db.lastInsertRowId;
     }];
     if (res) {
         [self fireInsertOrDeleteEventWithTable:obj.class.dbocTableName obj:obj];

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DBOCKit'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'A DB SQL Chain.'
 
 # This description is used to generate tags and improve search results.
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   A DB SQL Chain
                        DESC
 
-  s.homepage         = 'https://github.com/RunsCode/DBOCKit'
+  s.homepage         = 'https://github.com/RunsCode'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'RunsCode' => 'runs.wang.dev@gmail.com' }
