@@ -23,7 +23,7 @@
 #define PrimaryKey  @"primary key"
 
 #define primaryId   @"pk"
-@interface IMMessage () <DBObjectProtocol>
+@interface IMMessage ()
 
 @end
 
@@ -66,7 +66,5 @@
 - (void)didFinishConvertToJSONStringByOperation:(id<DBOperatorProtocol>)operater {
     
 }
-
-@synthesize primaryKeyId;
 
 @end

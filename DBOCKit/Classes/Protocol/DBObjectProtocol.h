@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DBObjectProtocol <NSObject>
 
 @required
-@property (nonatomic, assign) NSUInteger primaryKeyId;
+@property (nonatomic, assign) NSUInteger dbocPrimaryKeyId;
 
 @optional
 /// [field:NonBasicValueType]

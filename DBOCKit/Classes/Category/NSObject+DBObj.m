@@ -17,7 +17,17 @@
 
 @implementation NSObject (DBObj)
 
-@dynamic primaryKeyId;
+- (void)setDbocPrimaryKeyId:(NSUInteger)dbocPrimaryKeyId {
+    objc_setAssociatedObject(self, @selector(dbocPrimaryKeyId), @(dbocPrimaryKeyId), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSUInteger)dbocPrimaryKeyId {
+    NSNumber *value = objc_getAssociatedObject(self, @selector(dbocPrimaryKeyId));
+    if ([value isKindOfClass:NSNumber.class]) {
+        return value.integerValue;
+    }
+    return 0;
+}
 
 + (NSSet<NSString *> *)dbocIgnoreFields {
     NSMutableSet *mutable = [NSMutableSet setWithObjects:
@@ -195,7 +205,7 @@
     }
     char buffer[1024] = {0};
     char primaryKeyId[64] = {0};
-    sprintf(primaryKeyId, "%lu;", (unsigned long)self.primaryKeyId);
+    sprintf(primaryKeyId, "%lu;", (unsigned long)self.dbocPrimaryKeyId);
     const char *keySql = [propertySet.allObjects componentsJoinedByString:@"=?, "].UTF8String;
     MutableMemoryCopyDest(buffer, "UPDATE ", tName.UTF8String, " SET " , keySql, "=? WHERE primaryKeyId=", primaryKeyId, NULL);
     NSString *sql = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];

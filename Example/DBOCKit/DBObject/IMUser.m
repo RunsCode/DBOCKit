@@ -23,6 +23,4 @@
     return [self.dbocIgnoreFields allObjects];
 }
 
-@synthesize primaryKeyId;
-
 @end

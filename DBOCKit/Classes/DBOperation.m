@@ -182,7 +182,7 @@
 #pragma mark -- Convenience methods
 
 - (BOOL)insertOrUpdateObj:(id<DBObjectProtocol>)obj {
-    if (obj.primaryKeyId <= 0) {
+    if (obj.dbocPrimaryKeyId <= 0) {
         return [self insertObj:obj];
     }
     return [self udpateObj:obj];
@@ -193,13 +193,13 @@
         return NO;
     }
     NSString *tName = [obj.class dbocTableName];
-    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='%lu'", tName, obj.primaryKeyId];
+    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='%lu'", tName, obj.dbocPrimaryKeyId];
     __block BOOL res = NO;
     [self.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
         NSError *err = nil;
         res = [db executeUpdate:sql withErrorAndBindings:&err];
         if (err) {
-            NSLog(@"DBOC DELETE Occured Error. while primaryKeyId: %lu", obj.primaryKeyId);
+            NSLog(@"DBOC DELETE Occured Error. while primaryKeyId: %lu", obj.dbocPrimaryKeyId);
         }
     }];
     if (res) {
@@ -304,7 +304,7 @@
             NSLog(@"DBOC INSERT Failed, sql: %@, error: %@", sqlObj.sql, err);
             return;
         }
-        obj.primaryKeyId = db.lastInsertRowId;
+        obj.dbocPrimaryKeyId = db.lastInsertRowId;
     }];
     if (res) {
         [self fireInsertOrDeleteEventWithTable:obj.class.dbocTableName obj:obj];
