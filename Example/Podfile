@@ -1,0 +1,16 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'DBOCKit_Example' do
+  pod 'DBOCKit', :path => '../'
+  pod 'FMDB'
+  pod 'MJExtension'
+
+
+  target 'DBOCKit_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
