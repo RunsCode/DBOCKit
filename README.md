@@ -1,6 +1,5 @@
 # DBOCKit
 
-[![CI Status](https://img.shields.io/travis/wyf705064/DBOCKit.svg?style=flat)](https://travis-ci.org/wyf705064/DBOCKit)
 [![Version](https://img.shields.io/cocoapods/v/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
 [![License](https://img.shields.io/cocoapods/l/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
 [![Platform](https://img.shields.io/cocoapods/p/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
