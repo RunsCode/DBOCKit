@@ -4,14 +4,26 @@
 [![License](https://img.shields.io/cocoapods/l/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
 [![Platform](https://img.shields.io/cocoapods/p/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
 
-## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
+Based on FMDB
 
-#### Init
+**几个目的:**
+> 使用链式语法生成sql，不用写硬编码的sql，一行代码建表
+> 像操作JSON一样简单，直接增删改查模型，可直接字典转模型，二级字典转模型
+> 数据库的增删改查可被监听观察，回调给需要的对象
+
+**There are several main purposes for writing this code:**
+> Use chain syntax to generate sql, no need to write hard-coded sql, one line of code to build a table.
+> It is as simple as operating JSON, directly adding, deleting, modifying and querying models, direct dictionary-to-model, secondary dictionary-to-model
+> Database additions, deletions, and changes can be monitored and observed, and callbacks can be made to the required objects
+
+## Usage
+
+
+#### Init db operator
 ---
 ```objectivec
-
 - (DBOperation *)operator {
     if (_operator) return _operator;
     //
@@ -25,12 +37,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 // Observer if you need
 - (NSArray<Class> *)observeObjClassArray {
-    return @[
-        IMMessage.class,
-        IMSession.class,
-        IMObject.class,
-        IMUser.class,
-    ];
+    return @[ IMMessage.class ];
 }
 
 /// When a row of data in the table is updated, it will notify the monitoring object of that class
@@ -98,7 +105,7 @@ NSArray *arr = @[message_0, message_1, message_2];
 [self.operator deleteObj:obj];
 
 // 1. Delete a group of objects
-[self.operator deleteObjs:@[arr_0, arr_1]];
+[self.operator deleteObjs:@[obj_0, obj_1]];
 
 // 2. Use DBSQLChain sql
 char *tName = [IMMessage.class dbocTableName];
@@ -157,6 +164,41 @@ NSUInteger count = [self.operator countWithSql:sql];
 // 1. Use class
 BOOL res = [self.operator countOfTable:IMSession.dbocTableName];
 ```
+
+
+#### The chain of grammar 链式语法
+```objectivec
+@interface DBSQLChain (MainAction)
+@property (nonatomic, strong, class, readonly) DBSQLChain *create;
+@property (nonatomic, strong, class, readonly) DBSQLChain *drop;
+@property (nonatomic, strong, class, readonly) DBSQLChain *alter;
+@property (nonatomic, strong, class, readonly) DBSQLChain *insert;
+@property (nonatomic, strong, class, readonly) DBSQLChain *delete;
+@property (nonatomic, strong, class, readonly) DBSQLChain *update;
+@property (nonatomic, strong, class, readonly) DBSQLChain *select;
+@end
+```
+
+##### Example
+* Create sql
+    ```objectivec
+ DBSQLChain *chain = DBSQLChain.create.table("t_hello_im_message").space
+	.append("( pk integer PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT(0), ")
+	.append("userGuid varchar(64), nickName varchar(32), realName varchar(16) )");
+const char *result = chain.sql.UTF8String;
+    ```
+    
+* Select sql
+    ```objectivec
+DBSQLChain *chain = DBSQLChain.select.field("nickName").space
+	.from("t_hello_im_message")
+	.where("age = %ld", 18)
+	.and("sex = %ld", 1)
+	.and("(weight = %ld OR weight = %ld)", 180, 120)
+	.orderBy("pk").desc.limit(10).offset(5);
+const char *result = chain.sql.UTF8String;
+    ```
+
 
 
 ## Requirements
