@@ -165,7 +165,6 @@ NSUInteger count = [self.operator countWithSql:sql];
 BOOL res = [self.operator countOfTable:IMSession.dbocTableName];
 ```
 
-
 #### The chain of grammar 链式语法
 ```objectivec
 @interface DBSQLChain (MainAction)
@@ -180,16 +179,16 @@ BOOL res = [self.operator countOfTable:IMSession.dbocTableName];
 ```
 
 ##### Example
-* Create sql
-    ```objectivec
- DBSQLChain *chain = DBSQLChain.create.table("t_hello_im_message").space
+**Create sql**
+```objectivec
+DBSQLChain *chain = DBSQLChain.create.table("t_hello_im_message").space
 	.append("( pk integer PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT(0), ")
 	.append("userGuid varchar(64), nickName varchar(32), realName varchar(16) )");
 const char *result = chain.sql.UTF8String;
-    ```
-    
-* Select sql
-    ```objectivec
+```
+**Select sql**
+
+```objectivec
 DBSQLChain *chain = DBSQLChain.select.field("nickName").space
 	.from("t_hello_im_message")
 	.where("age = %ld", 18)
@@ -197,7 +196,7 @@ DBSQLChain *chain = DBSQLChain.select.field("nickName").space
 	.and("(weight = %ld OR weight = %ld)", 180, 120)
 	.orderBy("pk").desc.limit(10).offset(5);
 const char *result = chain.sql.UTF8String;
-    ```
+```
 
 
 
