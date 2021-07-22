@@ -66,9 +66,9 @@
 /***
  INSERT INTO t_im_meessage (time, ts, mutableDictionary, imObjs, addType1, immutableSet, dateTime, type, immutableDictionary, immutableArray, date, mutableArray, session, originData, addType2, fromUser, msgId, targetUser, tsObjInt, addType0) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);*/
 - (IBAction)onInsert:(id)sender {
-//    [self.operator insertOrUpdateObj:[self fetchMessage]];
-//    NSString *sql = [NSString stringWithFormat:@"INSERT INTO t_im_meessage (time, ts) VALUES (3.141692654, 9876543210);"];
-//    [self.operator executeWithSql:sql];
+    [self.operator insertOrUpdateObj:[self fetchMessage]];
+    NSString *sql = [NSString stringWithFormat:@"INSERT INTO t_im_meessage (time, ts) VALUES (3.141692654, 9876543210);"];
+    [self.operator executeWithSql:sql];
 
     NSArray *arr = @[self.fetchMessage, self.fetchMessage, self.fetchMessage];
     [self.operator insertOrUpdateObjs:arr];
@@ -83,7 +83,6 @@
 
 //    NSString *tName = [IMMessage.class dbocTableName];
 //    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='4'", tName];
-//    [self.operator updateSql:sql observable:res.lastObject];
 //    [self.operator executeWithSql:sql];
 }
 
