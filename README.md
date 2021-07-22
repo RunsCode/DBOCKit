@@ -50,11 +50,13 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ---
 ```objectivec
 @implementation IMMessage
+
 /// If you want to customize the name of the table, you must implement this method,
 /// otherwise the name of the table is the class name by default
 + (NSString *)tableName {
    return @"t_im_message";
 }
+
 // Like MJExtension
 + (NSArray<NSString *> *)ignoreTheFields {
     return @[
@@ -62,6 +64,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
         NSStringFromSelector(@selector(ignoreString))
     ];
 }
+
 // Like MJExtension
 + (NSDictionary<NSString *,Class> *)arrayElementtFiledMapping {
     return @{ NSStringFromSelector(@selector(imObjs)): IMObject.class };
@@ -75,7 +78,6 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 #### DB operation
 ---
 ##### Insert 
----
 ```objectivec
 //0. Use class
 IMMessage *message = ...;
@@ -91,7 +93,6 @@ NSArray *arr = @[message_0, message_1, message_2];
 ```
 
 ##### Delete
----
 ```objectivec
 // 0. Delete a single object
 [self.operator deleteObj:obj];
@@ -99,16 +100,14 @@ NSArray *arr = @[message_0, message_1, message_2];
 // 1. Delete a group of objects
 [self.operator deleteObjs:@[arr_0, arr_1]];
 
-// 2. Use sql
-NSString *tName = [IMMessage.class dbocTableName];
-NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='4'", tName];
+// 2. Use DBSQLChain sql
+char *tName = [IMMessage.class dbocTableName];
+NSString *sql = DBSQLChain.delete.from(tName).where("primaryKeyId='4'").sql;
 [self.operator executeWithSql:sql];
 
 ```
 
 ##### Update
-
----
 ```objectivec
 // 0. Update a single object
 [self.operator insertOrUpdateObj:obj];
@@ -116,9 +115,47 @@ NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='
 // 1. Update a group of objects
 [self.operator insertOrUpdateObjs:arrayObj];
 
-// 2. Use sql
-NSString *sql = @"UPDATE t_im_meessage SET time=2222222, ts=7777777, addType0=88888888 WHERE primaryKeyId=1;";
+// 2. Use DBSQLChain sql
+const char *tName = IMMessage.class.dbocTableName.UTF8String;
+NSString *sql = DBSQLChain.update.table(tName).set("time=2222222, ts=7777777").where("primaryKeyId=1");
 [self.operator updateSql:sql observable:m];
+```
+
+##### Select
+```objectivec
+// 0. Use DBSQLChain sql
+NSString *sql = DBSQLChain.select.asterisk.from(IMMessage.dbocTableName.UTF8String).sql;
+NSArray *res1 = [self.operator selectWithSql:sql];
+
+// 1. Use class
+NSArray *res = [self.operator selectObjClass:IMMessage.class];
+```
+
+##### Alter
+```objectivec
+// Use DBSQLChain sql
+const char *tName = IMMessage.dbocTableName.UTF8String;
+NSString *sql = DBSQLChain.alter.table(tName).add("desc text").sql;
+NSString *sql = DBSQLChain.alter.table(tName).drop.column.field("dayDate").sql;
+NSString *sql = DBSQLChain.alter.table(tName).alter.column.field("desc").type("varchar(128)").sql;
+BOOL res = [self.operator executeWithSql:sql];
+```
+
+##### Drop
+```objectivec
+// Use DBSQLChain sql
+NSString *sql = DBSQLChain.drop.table(IMSession.dbocTableName.UTF8String).sql;
+BOOL res = [self.operator executeWithSql:sql];
+```
+
+##### Count
+```objectivec
+// 0.Use DBSQLChain sql
+NSString *sql = DBSQLChain.select.asterisk.from(IMMessage.dbocTableName.UTF8String).sql;
+NSUInteger count = [self.operator countWithSql:sql];
+
+// 1. Use class
+BOOL res = [self.operator countOfTable:IMSession.dbocTableName];
 ```
 
 

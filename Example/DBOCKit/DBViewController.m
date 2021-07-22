@@ -67,6 +67,7 @@
  INSERT INTO t_im_meessage (time, ts, mutableDictionary, imObjs, addType1, immutableSet, dateTime, type, immutableDictionary, immutableArray, date, mutableArray, session, originData, addType2, fromUser, msgId, targetUser, tsObjInt, addType0) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);*/
 - (IBAction)onInsert:(id)sender {
     [self.operator insertOrUpdateObj:[self fetchMessage]];
+
     NSString *sql = [NSString stringWithFormat:@"INSERT INTO t_im_meessage (time, ts) VALUES (3.141692654, 9876543210);"];
     [self.operator executeWithSql:sql];
 
@@ -81,9 +82,13 @@
     [self.operator deleteObjs:arr];
 //    [self.operator deleteObj:res.lastObject];
 
-//    NSString *tName = [IMMessage.class dbocTableName];
+    NSString *tName = [IMMessage.class dbocTableName];
 //    NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE primaryKeyId='4'", tName];
 //    [self.operator executeWithSql:sql];
+
+    NSString *sql = DBSQLChain.delete.from(tName.UTF8String).where("primaryKeyId='4'").sql;
+    [self.operator executeWithSql:sql];
+
 }
 
 - (IBAction)onUpdate:(id)sender {
@@ -96,6 +101,8 @@
 //    [self.operator insertOrUpdateObj:m];
 //    NSString *sql = @"UPDATE t_im_meessage SET time=2222222, ts=7777777, addType0=88888888 WHERE primaryKeyId=1;";
 //    [self.operator updateSql:sql observable:m];
+    const char *tName = IMMessage.class.dbocTableName.UTF8String;
+    DBSQLChain.update.table(tName).set("time=2222222, ts=7777777").where("primaryKeyId=1");
 }
 
 - (IBAction)onSelect:(id)sender {
