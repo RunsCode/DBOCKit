@@ -1,5 +1,5 @@
 # DBOCKit
-[toc]
+
 [![Version](https://img.shields.io/cocoapods/v/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
 [![License](https://img.shields.io/cocoapods/l/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
 [![Platform](https://img.shields.io/cocoapods/p/DBOCKit.svg?style=flat)](https://cocoapods.org/pods/DBOCKit)
@@ -32,11 +32,13 @@ To run the example project, clone the repo, and run `pod install` from the Examp
         IMUser.class,
     ];
 }
+
 /// When a row of data in the table is updated, it will notify the monitoring object of that class
 - (void)updateClass:(Class)cls withObj:(id<DBObjectProtocol>)obj {
     NSString *tName = [cls dbocTableName];
     NSLog(@"OCDB:VC  updateClass table: %@, obj: %@", tName, obj);
 }
+
 /// When a row of data in the table is inserted or deleted, 
 /// it will notify the monitoring object of this class
 - (void)updateTable:(NSString *)tName withObj:(id<DBObjectProtocol>)obj newTableCount:(NSUInteger)count {
@@ -48,29 +50,29 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ---
 ```objectivec
 @implementation IMMessage
-    /// If you want to customize the name of the table, you must implement this method,
-    /// otherwise the name of the table is the class name by default
-	+ (NSString *)tableName {
-       return @"t_im_message";
-    }
-	// Like MJExtension
-    + (NSArray<NSString *> *)ignoreTheFields {
-        return @[
-            NSStringFromSelector(@selector(ignoreInt)),
-            NSStringFromSelector(@selector(ignoreString))
-        ];
-    }
-	// Like MJExtension
-    + (NSDictionary<NSString *,Class> *)arrayElementtFiledMapping {
-        return @{ NSStringFromSelector(@selector(imObjs)): IMObject.class };
-    }
-    @end
+/// If you want to customize the name of the table, you must implement this method,
+/// otherwise the name of the table is the class name by default
++ (NSString *)tableName {
+   return @"t_im_message";
+}
+// Like MJExtension
++ (NSArray<NSString *> *)ignoreTheFields {
+    return @[
+        NSStringFromSelector(@selector(ignoreInt)),
+        NSStringFromSelector(@selector(ignoreString))
+    ];
+}
+// Like MJExtension
++ (NSDictionary<NSString *,Class> *)arrayElementtFiledMapping {
+    return @{ NSStringFromSelector(@selector(imObjs)): IMObject.class };
+}
+@end
 ... ...
-	// Use Class to directly build a table
-    [self.operator createTableWithObjClass:IMMessage.class];
+// Use Class to directly build a table
+[self.operator createTableWithObjClass:IMMessage.class];
 ```
 
-####DB operation
+#### DB operation
 ---
 ##### Insert 
 ---
