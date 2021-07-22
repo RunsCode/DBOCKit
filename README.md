@@ -150,8 +150,8 @@ BOOL res = [self.operator executeWithSql:sql];
 
 ##### Count
 ```objectivec
-// 0.Use DBSQLChain sql
-NSString *sql = DBSQLChain.select.asterisk.from(IMMessage.dbocTableName.UTF8String).sql;
+// 0.Use DBSQLChain sql, nil: default count(*)
+NSString *sql = DBSQLChain.select.count(nil).from(IMMessage.dbocTableName.UTF8String).sql;
 NSUInteger count = [self.operator countWithSql:sql];
 
 // 1. Use class

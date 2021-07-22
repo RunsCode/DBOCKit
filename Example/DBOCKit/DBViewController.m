@@ -131,9 +131,9 @@
 }
 
 - (IBAction)onCount:(id)sender {
-    NSString *sql = DBSQLChain.select.asterisk.from(IMMessage.dbocTableName.UTF8String).sql;
+    NSString *sql = DBSQLChain.select.count(nil).from(IMMessage.dbocTableName.UTF8String).sql;
     NSUInteger count = [self.operator countWithSql:sql];
-    NSLog(@"查询到 %ld条数据", count);
+    NSLog(@"查询到 %lu条数据", (unsigned long)count);
 }
 
 - (void)shareWithURL:(NSURL *)url {
