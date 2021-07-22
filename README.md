@@ -78,7 +78,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 #### DB operation
 ---
 ##### Insert 
-```objectivec
+```swift
 //0. Use class
 IMMessage *message = ...;
 [self.operator insertOrUpdateObj:message];
@@ -108,7 +108,7 @@ NSString *sql = DBSQLChain.delete.from(tName).where("primaryKeyId='4'").sql;
 ```
 
 ##### Update
-```objectivec
+```swift
 // 0. Update a single object
 [self.operator insertOrUpdateObj:obj];
 
@@ -132,7 +132,7 @@ NSArray *res = [self.operator selectObjClass:IMMessage.class];
 ```
 
 ##### Alter
-```objectivec
+```swift
 // Use DBSQLChain sql
 const char *tName = IMMessage.dbocTableName.UTF8String;
 NSString *sql = DBSQLChain.alter.table(tName).add("desc text").sql;
@@ -142,14 +142,14 @@ BOOL res = [self.operator executeWithSql:sql];
 ```
 
 ##### Drop
-```objectivec
+```swift
 // Use DBSQLChain sql
 NSString *sql = DBSQLChain.drop.table(IMSession.dbocTableName.UTF8String).sql;
 BOOL res = [self.operator executeWithSql:sql];
 ```
 
 ##### Count
-```objectivec
+```swift
 // 0.Use DBSQLChain sql, nil: default count(*)
 NSString *sql = DBSQLChain.select.count(nil).from(IMMessage.dbocTableName.UTF8String).sql;
 NSUInteger count = [self.operator countWithSql:sql];
@@ -161,8 +161,8 @@ BOOL res = [self.operator countOfTable:IMSession.dbocTableName];
 
 ## Requirements
 ```ruby
-  s.dependency 'FMDB'
-  s.dependency 'MJExtension'
+s.dependency 'FMDB'
+s.dependency 'MJExtension'
 ```
 
 ## Installation
